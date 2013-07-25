@@ -1,10 +1,14 @@
 #include "unfo_obj.h"
 #include "unfo_objlist.h"
+#include "unfo_dict.h"
+
+#include "unfo_utils.h"
 
 typedef struct UNFO_DocUpdate {
     UNFO_Object_HEAD
     UNFO_ObjList *references;
     UNFO_ObjList *packages;
+    UNFO_RTree *attributes;
 } UNFO_DocUpdate;
 
 UNFO_DocUpdate* unfo_doc_update_create();

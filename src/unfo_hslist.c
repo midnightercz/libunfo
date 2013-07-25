@@ -1,16 +1,35 @@
-#include "comps_hslist.h"
+/* libunfo - C alternative to yum.unfo library
+ * Copyright (C) 2013 Jindrich Luza
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to  Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301,
+ * USA
+ */
+
+#include "h/unfo_hslist.h"
 
 #include <stdlib.h>
-COMPS_HSList * comps_hslist_create() {
-    COMPS_HSList *ret;
-    ret =  malloc(sizeof(COMPS_HSList));
+UNFO_HSList * unfo_hslist_create() {
+    UNFO_HSList *ret;
+    ret =  malloc(sizeof(UNFO_HSList));
     if (!ret) {
         return NULL;
     }
     return ret;
 }
 
-void comps_hslist_init(COMPS_HSList * hslist,
+void unfo_hslist_init(UNFO_HSList * hslist,
                             void*(*data_constructor)(void* data),
                             void*(*data_cloner)(void* data),
                             void(*data_destructor)(void* data)) {
@@ -24,8 +43,8 @@ void comps_hslist_init(COMPS_HSList * hslist,
     hslist->last = NULL;
 }
 
-void comps_hslist_append(COMPS_HSList * hslist, void * data, unsigned construct) {
-    COMPS_HSListItem * it;
+void unfo_hslist_append(UNFO_HSList * hslist, void * data, unsigned construct) {
+    UNFO_HSListItem * it;
     void * ndata;
 
     if (hslist == NULL)
@@ -48,12 +67,12 @@ void comps_hslist_append(COMPS_HSList * hslist, void * data, unsigned construct)
     }
 }
 
-inline void comps_hslist_destroy_v(void ** hslist) {
-    comps_hslist_destroy((COMPS_HSList**) hslist);
+inline void unfo_hslist_destroy_v(void ** hslist) {
+    unfo_hslist_destroy((UNFO_HSList**) hslist);
 }
 
-void comps_hslist_destroy(COMPS_HSList ** hslist) {
-    COMPS_HSListItem *it,*oldit;
+void unfo_hslist_destroy(UNFO_HSList ** hslist) {
+    UNFO_HSListItem *it,*oldit;
     unsigned int x;
     if (*hslist == NULL) return;
     oldit = (*hslist)->first;
@@ -73,9 +92,9 @@ void comps_hslist_destroy(COMPS_HSList ** hslist) {
     *hslist = NULL;
 }
 
-void comps_hslist_remove(COMPS_HSList * hslist,
-                              COMPS_HSListItem * it) {
-    COMPS_HSListItem *itx, *itprev=NULL;
+void unfo_hslist_remove(UNFO_HSList * hslist,
+                              UNFO_HSListItem * it) {
+    UNFO_HSListItem *itx, *itprev=NULL;
     for (itx = hslist->first; itx != NULL && itx != it; itx = itx->next) {
         itprev = itx;
     }
@@ -95,10 +114,10 @@ void comps_hslist_remove(COMPS_HSList * hslist,
     }
 }
 
-void* comps_hslist_data_at(COMPS_HSList * hlist, unsigned int index)
+void* unfo_hslist_data_at(UNFO_HSList * hlist, unsigned int index)
 {
     unsigned int i=0;
-    COMPS_HSListItem * itx;
+    UNFO_HSListItem * itx;
     for (itx = hlist->first; itx != NULL && index != i; itx = itx->next, i++);
     if (itx == NULL)
         return itx;
@@ -106,22 +125,22 @@ void* comps_hslist_data_at(COMPS_HSList * hlist, unsigned int index)
         return itx->data;
 }
 
-COMPS_HSList* comps_hslist_clone(COMPS_HSList * hslist) {
-    COMPS_HSList *ret;
-    COMPS_HSListItem *it;
+UNFO_HSList* unfo_hslist_clone(UNFO_HSList * hslist) {
+    UNFO_HSList *ret;
+    UNFO_HSListItem *it;
 
-    ret = comps_hslist_create();
-    comps_hslist_init(ret, hslist->data_constructor,
+    ret = unfo_hslist_create();
+    unfo_hslist_init(ret, hslist->data_constructor,
                            hslist->data_cloner,
                            hslist->data_destructor);
     for (it = hslist->first; it != NULL; it = it->next) {
-        comps_hslist_append(ret, hslist->data_cloner(it->data), 0);
+        unfo_hslist_append(ret, hslist->data_cloner(it->data), 0);
     }
     return ret;
 }
 
-void comps_hslist_clear(COMPS_HSList * hslist) {
-    COMPS_HSListItem *it,*oldit;
+void unfo_hslist_clear(UNFO_HSList * hslist) {
+    UNFO_HSListItem *it,*oldit;
     if (hslist == NULL) return;
     oldit = hslist->first;
     it = (oldit)?oldit->next:NULL;
@@ -140,9 +159,9 @@ void comps_hslist_clear(COMPS_HSList * hslist) {
     hslist->last = NULL;
 }
 
-unsigned comps_hslist_values_equal(COMPS_HSList *hlist1, COMPS_HSList *hlist2,
+unsigned unfo_hslist_values_equal(UNFO_HSList *hlist1, UNFO_HSList *hlist2,
                                    char (*cmpf)(void*, void*)) {
-    COMPS_HSListItem *it, *it2;
+    UNFO_HSListItem *it, *it2;
     for (it = hlist1->first, it2 = hlist2->first; it != NULL && it2 != NULL;
         it = it->next, it2 = it2->next) {
         if (!cmpf(it->data, it2->data))
@@ -151,28 +170,4 @@ unsigned comps_hslist_values_equal(COMPS_HSList *hlist1, COMPS_HSList *hlist2,
     if (it != NULL || it2 != NULL)
         return 0;
     return 1;
-}
-
-void comps_hslist_unique(COMPS_HSList *hlist, char (*cmpf)(void*, void*)) {
-    COMPS_Set *set;
-    COMPS_HSListItem *it, *it2;
-
-    if (hlist == NULL) return;
-
-    set = comps_set_create();
-    comps_set_init(set, NULL, NULL, NULL, cmpf);
-    it2 = NULL;
-    for (it = hlist->first; it != NULL; it2 = it, it = it->next) {
-        if (!comps_set_in(set, it->data)) {
-            comps_set_add(set, it->data);
-        } else {
-            hlist->data_destructor(it->data);
-        }
-        free(it2);
-    }
-    free(it2);
-    hlist->first = set->data->first;
-    hlist->last = set->data->last;
-    free(set->data);
-    free(set);
 }
