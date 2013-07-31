@@ -12,23 +12,26 @@ typedef struct {
 
 void testobj_destroy_u(UNFO_Object * obj) {
     free(((TestObj*)obj)->name);
-    free(obj);
+    //free(obj);
 }
 
-UNFO_Object * testobj_create(char * name) {
-    UNFO_Object *ret = unfo_object_create(&TestObj_ObjectInfo);
-    UNFO_Check_NULL(ret, NULL)
-    ((TestObj*)ret)->name = malloc(sizeof(char)* (strlen(name)+1));
-    memcpy(((TestObj*)ret)->name, name, sizeof(char)*(strlen(name)+1));
-    return ret;
+void testobj_create(UNFO_Object *uobj) {
+    ((TestObj*)uobj)->name = NULL;
 }
+
+void testobj_set_name(TestObj *testobj, char *name) {
+    testobj->name = malloc(sizeof(char)*(strlen(name)+1));
+    strcpy(testobj->name, name);
+}
+
 
 int testobj_cmp(UNFO_Object* obj1, UNFO_Object *obj2) {
    return strcmp(((TestObj*)obj1)->name, ((TestObj*)obj2)->name) == 0;
 }
 
-UNFO_ObjectInfo TestObj_ObjectInfo =  {
+UNFO_ObjectInfo TestObj_ObjInfo =  {
     .obj_size = sizeof(TestObj),
+    .constructor = &testobj_create,
     .destructor = &testobj_destroy_u,
     .obj_cmp = &testobj_cmp
 };
@@ -37,8 +40,9 @@ START_TEST(test_objlist_mmtest) {
     UNFO_ObjList *list;
     UNFO_Object *testobj, *backup;
 
-    list = unfo_objlist_create();
-    testobj = testobj_create("test1");
+    list = (UNFO_ObjList*)unfo_object_create(&UNFO_ObjList_ObjInfo);
+    testobj = unfo_object_create(&TestObj_ObjInfo);
+    testobj_set_name((TestObj*)testobj, "test1");
     unfo_objlist_append(list, testobj);
     backup = unfo_object_copy(testobj);
 
@@ -55,10 +59,11 @@ START_TEST(test_objlist_append) {
     UNFO_ObjList *list;
     UNFO_Object *testobj;
     char *names[] = {"test1", "test2", "test3", "test4", "test5"};
-    list = unfo_objlist_create();
+    list = (UNFO_ObjList*)unfo_object_create(&UNFO_ObjList_ObjInfo);
 
     for (unsigned int x = 0; x < 5; x++) {
-        testobj = testobj_create(names[x]);
+        testobj = unfo_object_create(&TestObj_ObjInfo);
+        testobj_set_name((TestObj*)testobj, names[x]);
         unfo_objlist_append(list, testobj);
         unfo_object_destroy(testobj);
     }
@@ -79,11 +84,12 @@ START_TEST(test_objlist_insert) {
     unsigned pos[] = {0, 1, 3, 2, 4, 1};
     int rets[] = {1, 1, 0, 1, 0, 1};
     int pos2[] = {0, 5, 1, 3, -1, -1};
-    list = unfo_objlist_create();
+    list = (UNFO_ObjList*)unfo_object_create(&UNFO_ObjList_ObjInfo);
     int z;
 
     for (unsigned int x = 0; x < 6; x++) {
-        testobj = testobj_create(names[x]);
+        testobj = unfo_object_create(&TestObj_ObjInfo);
+        testobj_set_name((TestObj*)testobj, names[x]);
         z = unfo_objlist_insert_at(list, pos[x], testobj);
         ck_assert(z == rets[x]);
         unfo_object_destroy(testobj);
@@ -106,10 +112,10 @@ START_TEST(test_objlist_sublist) {
     char *names[] = {"test1", "test2", "test3", "test4", "test5", "test6",
                      "test7", "test8", "test9", "test10"};
 
-    printf("sublist-test\n");
-    list = unfo_objlist_create();
+    list = (UNFO_ObjList*)unfo_object_create(&UNFO_ObjList_ObjInfo);
     for (unsigned int x = 0; x < 10; x++) {
-        testobj1 = testobj_create(names[x]);
+        testobj1 = unfo_object_create(&TestObj_ObjInfo);
+        testobj_set_name((TestObj*)testobj1, names[x]);
         unfo_objlist_append(list, testobj1);
         unfo_object_destroy(testobj1);
     }
@@ -176,6 +182,5 @@ int main(int argc, char *argv[]) {
     failed = srunner_ntests_failed(sr);
     srunner_free(sr);
     return (failed) ? EXIT_SUCCESS: EXIT_FAILURE;
-
 }
 

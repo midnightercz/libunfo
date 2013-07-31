@@ -20,26 +20,18 @@ void unfo_objlist_it_destroy(UNFO_ObjListIt *objit) {
     free(objit);
 }
 
-UNFO_ObjList* unfo_objlist_create() {
-    UNFO_ObjList *objlist;
-    objlist = (UNFO_ObjList*)unfo_object_create(&UNFO_ObjList_ObjInfo);
-    UNFO_Check_NULL(objlist, NULL)
+void unfo_objlist_create(UNFO_ObjList *objlist) {
     objlist->first = NULL;
     objlist->last = NULL;
     objlist->len = 0;
-    return (UNFO_ObjList*)objlist;
 }
-
-
-UNFO_Object* unfo_objlist_create_u() {
-    return (UNFO_Object*)unfo_objlist_create();
-}
+UNFO_CREATE_u(objlist, UNFO_ObjList)
 
 UNFO_ObjList* unfo_objlist_copy(UNFO_ObjList *objlist) {
     UNFO_ObjList *ret;
     UNFO_ObjListIt *it;
 
-    ret = unfo_objlist_create();
+    ret =(UNFO_ObjList*)unfo_object_create(&UNFO_ObjList_ObjInfo);
     for (it = objlist->first; it != NULL; it = it->next) {
         unfo_objlist_append(ret, unfo_object_copy(it->unfo_obj));
     }
@@ -61,7 +53,6 @@ void unfo_objlist_destroy(UNFO_ObjList *objlist) {
     }
     if (oldit)
         unfo_objlist_it_destroy(oldit);
-    free(objlist);
 }
 
 void unfo_objlist_destroy_u(UNFO_Object *objlist) {
@@ -220,8 +211,9 @@ int unfo_objlist_insert_at(UNFO_ObjList *objlist,
 
 UNFO_ObjList* unfo_objlist_sublist_it(UNFO_ObjListIt *startit,
                                       UNFO_ObjListIt *end) {
-    UNFO_ObjList *ret = unfo_objlist_create();
+    UNFO_ObjList *ret;
     UNFO_ObjListIt *it;
+    ret = (UNFO_ObjList*)unfo_object_create(&UNFO_ObjList_ObjInfo);
 
     for (it = startit; it != end; it = it->next) {
         unfo_objlist_append(ret, it->unfo_obj);
@@ -233,8 +225,10 @@ UNFO_ObjList* unfo_objlist_sublist_it_step(UNFO_ObjListIt *startit,
                                            UNFO_ObjListIt *end,
                                            unsigned int step) {
     unsigned int stepc;
-    UNFO_ObjList *ret = unfo_objlist_create();
+    UNFO_ObjList *ret;
     UNFO_ObjListIt *it;
+
+    ret = (UNFO_ObjList*)unfo_object_create(&UNFO_ObjList_ObjInfo);
     stepc = step;
     for (it = startit; it->next != end; it = it->next, stepc++) {
         if (step == stepc) {
@@ -249,8 +243,9 @@ UNFO_ObjList* unfo_objlist_sublist_indexed(UNFO_ObjList *objlist,
                                            unsigned int start,
                                            unsigned int end) {
     unsigned int pos;
-    UNFO_ObjList *ret = unfo_objlist_create();
+    UNFO_ObjList *ret;
     UNFO_ObjListIt *it;
+    ret = (UNFO_ObjList*)unfo_object_create(&UNFO_ObjList_ObjInfo);
 
     for (it = objlist->first, pos=0;
          it != NULL && pos != start;
@@ -267,8 +262,9 @@ UNFO_ObjList* unfo_objlist_sublist_indexed_step(UNFO_ObjList *objlist,
                                                unsigned int step) {
     unsigned int pos;
     unsigned int stepc;
-    UNFO_ObjList *ret = unfo_objlist_create();
+    UNFO_ObjList *ret;
     UNFO_ObjListIt *it;
+    ret = (UNFO_ObjList*)unfo_object_create(&UNFO_ObjList_ObjInfo);
 
     pos = 0;
     stepc = 0;

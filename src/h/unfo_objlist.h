@@ -44,8 +44,8 @@ typedef struct UNFO_ObjList {
 } UNFO_ObjList;
 
 
-UNFO_ObjList* unfo_objlist_create();
-UNFO_Object* unfo_objlist_create_u();
+void unfo_objlist_create(UNFO_ObjList *objlist);
+void unfo_objlist_create_u(UNFO_Object *uobj);
 void unfo_objlist_destroy(UNFO_ObjList *objlist);
 void unfo_objlist_destroy_u(UNFO_Object *objlist);
 

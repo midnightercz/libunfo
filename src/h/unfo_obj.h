@@ -11,7 +11,7 @@ typedef struct UNFO_ObjectInfo UNFO_ObjectInfo;
 
 struct UNFO_ObjectInfo {
     size_t obj_size;
-    UNFO_Object* (*constructor)(void);
+    void (*constructor)(UNFO_Object*);
     void (*destructor)(UNFO_Object*);
     UNFO_Object* (*deep_copy)(UNFO_Object*);
     int (*obj_cmp)(UNFO_Object*, UNFO_Object*);
