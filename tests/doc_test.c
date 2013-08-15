@@ -18,7 +18,7 @@ START_TEST(test_doc_update) {
     UNFO_DocUpdate *docupdate;
     char *tmp;
 
-    int (*setters[])(UNFO_DocUpdate*, char*) = {
+    int (*setters[])(UNFO_DocUpdate*, const char*) = {
         &unfo_doc_update_from_set,
         &unfo_doc_update_status_set,
         &unfo_doc_update_type_set,
@@ -45,7 +45,8 @@ START_TEST(test_doc_update) {
         &unfo_doc_update_solution_get,
         NULL
     };
-    docupdate = (UNFO_DocUpdate*)unfo_object_create(&UNFO_DocUpdate_ObjInfo);
+    docupdate = (UNFO_DocUpdate*)unfo_object_create(&UNFO_DocUpdate_ObjInfo,
+                                                    NULL);
     for (int i=0; setters[i]; i++) {
         setters[i](docupdate, "test val");
     }
@@ -62,7 +63,7 @@ START_TEST(test_doc_pkg) {
     UNFO_DocPkg *docpkg;
     char *tmp;
 
-    int (*setters[])(UNFO_DocPkg*, char*) = {
+    int (*setters[])(UNFO_DocPkg*, const char*) = {
         &unfo_doc_pkg_name_set,
         &unfo_doc_pkg_version_set,
         &unfo_doc_pkg_release_set,
@@ -83,7 +84,7 @@ START_TEST(test_doc_pkg) {
         &unfo_doc_pkg_sum_get,
         NULL
     };
-    docpkg = (UNFO_DocPkg*)unfo_object_create(&UNFO_DocPkg_ObjInfo);
+    docpkg = (UNFO_DocPkg*)unfo_object_create(&UNFO_DocPkg_ObjInfo, NULL);
     for (int i=0; setters[i]; i++) {
         setters[i](docpkg, "test val");
     }
@@ -99,7 +100,7 @@ START_TEST(test_doc_ref) {
     UNFO_DocRef *docref;
     char *tmp;
 
-    int (*setters[])(UNFO_DocRef*, char*) = {
+    int (*setters[])(UNFO_DocRef*, const char*) = {
         &unfo_doc_ref_url_set,
         &unfo_doc_ref_type_set,
         &unfo_doc_ref_title_set,
@@ -112,7 +113,7 @@ START_TEST(test_doc_ref) {
         &unfo_doc_ref_title_get,
         NULL
     };
-    docref = (UNFO_DocRef*)unfo_object_create(&UNFO_DocRef_ObjInfo);
+    docref = (UNFO_DocRef*)unfo_object_create(&UNFO_DocRef_ObjInfo, NULL);
     for (int i=0; setters[i]; i++) {
         setters[i](docref, "test val");
     }
@@ -128,7 +129,7 @@ START_TEST(test_doc_coll) {
     UNFO_DocColl *doccoll;
     char *tmp;
 
-    int (*setters[])(UNFO_DocColl*, char*) = {
+    int (*setters[])(UNFO_DocColl*, const char*) = {
         &unfo_doc_coll_short_set,
         &unfo_doc_coll_name_set,
         NULL
@@ -139,7 +140,7 @@ START_TEST(test_doc_coll) {
         &unfo_doc_coll_name_get,
         NULL
     };
-    doccoll = (UNFO_DocColl*)unfo_object_create(&UNFO_DocColl_ObjInfo);
+    doccoll = (UNFO_DocColl*)unfo_object_create(&UNFO_DocColl_ObjInfo, NULL);
     for (int i=0; setters[i]; i++) {
         setters[i](doccoll, "test val");
     }

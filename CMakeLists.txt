@@ -9,6 +9,8 @@ set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS} -gdb -O0")
 
 set(VERSION "${libunfo.VERSION_MAJOR}.${libunfo.VERSION_MINOR}.${libunfo.VERSION_PATCH}")
 
+set(ZLIB_SUPPORT YES)
+
 include_directories("${PROJECT_BINARY_DIR}")
 include_directories("${PROJECT_BINARY_DIR}/src")
 

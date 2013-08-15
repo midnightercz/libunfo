@@ -1,6 +1,7 @@
 #include "h/unfo_docref.h"
 
-void unfo_doc_ref_create(UNFO_DocRef* docref){
+void unfo_doc_ref_create(UNFO_DocRef* docref, UNFO_Object **args){
+    (void)args;
     docref->attrs = unfo_rtree_create(&__unfo_str_clone,
                                       &__unfo_str_clone, &free);
 }

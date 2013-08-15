@@ -101,14 +101,16 @@ void unfo_hslist_remove(UNFO_HSList * hslist,
     if (itx != it)
         return;
     if (itprev == NULL) {
-        if (hslist->first == hslist->last)
-            hslist->last = hslist->first->next;
+        if (hslist->first == hslist->last) {
+            hslist->last = NULL;
+        }
         hslist->first = hslist->first->next;
     } else {
         itprev->next = it->next;
         if (it == hslist->last) {
-            if (hslist->first == hslist->last)
-                hslist->first = itprev;
+            if (hslist->first == hslist->last) {
+                hslist->first = NULL;
+            }
             hslist->last = itprev;
         }
     }

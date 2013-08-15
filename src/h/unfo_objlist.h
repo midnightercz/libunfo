@@ -44,8 +44,8 @@ typedef struct UNFO_ObjList {
 } UNFO_ObjList;
 
 
-void unfo_objlist_create(UNFO_ObjList *objlist);
-void unfo_objlist_create_u(UNFO_Object *uobj);
+void unfo_objlist_create(UNFO_ObjList *objlist, UNFO_Object **args);
+void unfo_objlist_create_u(UNFO_Object *uobj, UNFO_Object **args);
 void unfo_objlist_destroy(UNFO_ObjList *objlist);
 void unfo_objlist_destroy_u(UNFO_Object *objlist);
 
@@ -58,6 +58,7 @@ int unfo_objlist_walk_r(UNFO_ObjListIt *walker_start,
                             UNFO_Object **result);
 
 
+int unfo_objlist_append_x(UNFO_ObjList *objlist, UNFO_Object *obj);
 int unfo_objlist_append(UNFO_ObjList *objlist, UNFO_Object *obj);
 UNFO_Object* unfo_objlist_get(UNFO_ObjList *objlist, unsigned int atpos);
 int unfo_objlist_insert_at(UNFO_ObjList *objlist,
@@ -65,6 +66,8 @@ int unfo_objlist_insert_at(UNFO_ObjList *objlist,
                            UNFO_Object *obj);
 UNFO_ObjList* unfo_objlist_sublist_it(UNFO_ObjListIt *startit,
                                       UNFO_ObjListIt *end);
+UNFO_ObjList* unfo_objlist_filter(UNFO_ObjList *list,
+                                  char (*filter_func)(UNFO_Object*));
 
 extern UNFO_ObjectInfo UNFO_ObjList_ObjInfo;
 

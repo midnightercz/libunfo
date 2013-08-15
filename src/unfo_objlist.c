@@ -14,13 +14,24 @@ UNFO_ObjListIt* unfo_objlist_it_create(UNFO_Object *obj) {
     return objit;
 }
 
+UNFO_ObjListIt* unfo_objlist_it_create_x(UNFO_Object *obj) {
+    UNFO_ObjListIt *objit;
+    objit = malloc(sizeof(UNFO_ObjListIt));
+    UNFO_Check_NULL(objit, NULL)
+
+    objit->unfo_obj = obj;
+    objit->next = NULL;
+    return objit;
+}
+
 void unfo_objlist_it_destroy(UNFO_ObjListIt *objit) {
     UNFO_Check_NULL(objit, )
     unfo_object_destroy(objit->unfo_obj);
     free(objit);
 }
 
-void unfo_objlist_create(UNFO_ObjList *objlist) {
+void unfo_objlist_create(UNFO_ObjList *objlist, UNFO_Object **args) {
+    (void)args;
     objlist->first = NULL;
     objlist->last = NULL;
     objlist->len = 0;
@@ -31,7 +42,7 @@ UNFO_ObjList* unfo_objlist_copy(UNFO_ObjList *objlist) {
     UNFO_ObjList *ret;
     UNFO_ObjListIt *it;
 
-    ret =(UNFO_ObjList*)unfo_object_create(&UNFO_ObjList_ObjInfo);
+    ret =(UNFO_ObjList*)unfo_object_create(&UNFO_ObjList_ObjInfo, NULL);
     for (it = objlist->first; it != NULL; it = it->next) {
         unfo_objlist_append(ret, unfo_object_copy(it->unfo_obj));
     }
@@ -92,7 +103,6 @@ UNFO_ObjListIt* unfo_objlist_get_it(UNFO_ObjList *objlist,
 }
 
 
-
 int unfo_objlist_walk(UNFO_ObjListIt **walker, UNFO_Object **result) {
     UNFO_Check_NULL(*walker, 0)
     result = &(*walker)->unfo_obj;
@@ -111,20 +121,26 @@ int unfo_objlist_walk_r(UNFO_ObjListIt *start,
     return 1;
 }
 
-int unfo_objlist_append(UNFO_ObjList *objlist, UNFO_Object *obj) {
+static int __unfo_objlist_append(UNFO_ObjList *objlist, UNFO_ObjListIt *objit) {
     UNFO_Check_NULL(objlist, -1)
-
-    UNFO_ObjListIt *new_it = unfo_objlist_it_create(obj);
-
     if (objlist->first == NULL) {
-        objlist->first = new_it;
-        objlist->last = new_it;
+        objlist->first = objit;
+        objlist->last = objit;
     } else {
-        objlist->last->next = new_it;
+        objlist->last->next = objit;
         objlist->last = objlist->last->next;
     }
     objlist->len++;
     return 1;
+}
+
+int unfo_objlist_append_x(UNFO_ObjList *objlist, UNFO_Object *obj) {
+    UNFO_ObjListIt *new_it = unfo_objlist_it_create_x(obj);
+    return __unfo_objlist_append(objlist, new_it);
+}
+int unfo_objlist_append(UNFO_ObjList *objlist, UNFO_Object *obj) {
+    UNFO_ObjListIt *new_it = unfo_objlist_it_create(obj);
+    return __unfo_objlist_append(objlist, new_it);
 }
 
 int unfo_objlist_insert_after(UNFO_ObjList *objlist,
@@ -213,7 +229,7 @@ UNFO_ObjList* unfo_objlist_sublist_it(UNFO_ObjListIt *startit,
                                       UNFO_ObjListIt *end) {
     UNFO_ObjList *ret;
     UNFO_ObjListIt *it;
-    ret = (UNFO_ObjList*)unfo_object_create(&UNFO_ObjList_ObjInfo);
+    ret = (UNFO_ObjList*)unfo_object_create(&UNFO_ObjList_ObjInfo, NULL);
 
     for (it = startit; it != end; it = it->next) {
         unfo_objlist_append(ret, it->unfo_obj);
@@ -228,7 +244,7 @@ UNFO_ObjList* unfo_objlist_sublist_it_step(UNFO_ObjListIt *startit,
     UNFO_ObjList *ret;
     UNFO_ObjListIt *it;
 
-    ret = (UNFO_ObjList*)unfo_object_create(&UNFO_ObjList_ObjInfo);
+    ret = (UNFO_ObjList*)unfo_object_create(&UNFO_ObjList_ObjInfo, NULL);
     stepc = step;
     for (it = startit; it->next != end; it = it->next, stepc++) {
         if (step == stepc) {
@@ -245,7 +261,7 @@ UNFO_ObjList* unfo_objlist_sublist_indexed(UNFO_ObjList *objlist,
     unsigned int pos;
     UNFO_ObjList *ret;
     UNFO_ObjListIt *it;
-    ret = (UNFO_ObjList*)unfo_object_create(&UNFO_ObjList_ObjInfo);
+    ret = (UNFO_ObjList*)unfo_object_create(&UNFO_ObjList_ObjInfo, NULL);
 
     for (it = objlist->first, pos=0;
          it != NULL && pos != start;
@@ -264,7 +280,7 @@ UNFO_ObjList* unfo_objlist_sublist_indexed_step(UNFO_ObjList *objlist,
     unsigned int stepc;
     UNFO_ObjList *ret;
     UNFO_ObjListIt *it;
-    ret = (UNFO_ObjList*)unfo_object_create(&UNFO_ObjList_ObjInfo);
+    ret = (UNFO_ObjList*)unfo_object_create(&UNFO_ObjList_ObjInfo, NULL);
 
     pos = 0;
     stepc = 0;
@@ -280,6 +296,20 @@ UNFO_ObjList* unfo_objlist_sublist_indexed_step(UNFO_ObjList *objlist,
     return ret;
 }
 
+UNFO_ObjList* unfo_objlist_filter(UNFO_ObjList *list,
+                                  char (*filter_func)(UNFO_Object*)) {
+    UNFO_ObjList *ret;
+    unsigned int i = 0;
+    UNFO_ObjListIt *it;
+
+    ret = (UNFO_ObjList*)unfo_object_create(&UNFO_ObjList_ObjInfo, NULL);
+
+    for (i=0, it = list->first; i < list->len; it = it->next, i++) {
+        if (filter_func(it->unfo_obj))
+            unfo_objlist_append(ret, it->unfo_obj);
+    }
+    return ret;
+}
 
 UNFO_ObjectInfo UNFO_ObjList_ObjInfo = {
     .obj_size = sizeof(UNFO_ObjList),

@@ -1,7 +1,13 @@
 #include "h/unfo_doc.h"
 
-void unfo_doc_create(UNFO_Doc* doc) {
+void unfo_doc_create(UNFO_Doc* doc, UNFO_Object **args) {
+    (void)args;
     (void)doc;
+    if (args && args[0]->obj_info == &UNFO_DocUpdate_ObjInfo) {
+            doc->updates = (UNFO_ObjList*)unfo_object_copy(args[0]);
+    } else {
+        doc->updates = (UNFO_ObjList*)unfo_object_create(&UNFO_ObjList_ObjInfo, NULL);
+    }
 }
 UNFO_CREATE_u(doc, UNFO_Doc)
 
@@ -14,7 +20,7 @@ UNFO_Doc* unfo_doc_copy(UNFO_Doc *doc) {
 UNFO_COPY_u(doc, UNFO_Doc)
 
 void unfo_doc_destroy(UNFO_Doc *doc) {
-    unfo_object_destroy((UNFO_Object*)doc);
+    unfo_object_destroy((UNFO_Object*)doc->updates);
 }
 UNFO_DESTROY_u(doc, UNFO_Doc)
 

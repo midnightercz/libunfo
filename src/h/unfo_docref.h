@@ -10,16 +10,16 @@ typedef struct UNFO_DocRef {
     UNFO_RTree *attrs;
 } UNFO_DocRef;
 
-void unfo_doc_ref_create(UNFO_DocRef *docref);
-void unfo_doc_ref_create_u(UNFO_Object *uobj);
+void unfo_doc_ref_create(UNFO_DocRef *docref, UNFO_Object **args);
+void unfo_doc_ref_create_u(UNFO_Object *uobj, UNFO_Object **args);
 UNFO_DocRef* unfo_doc_ref_copy(UNFO_DocRef *docref);
 UNFO_Object* unfo_doc_ref_copy_u(UNFO_Object *obj);
 void unfo_doc_ref_destroy(UNFO_DocRef *docref);
 void unfo_doc_ref_destroy_u(UNFO_Object *docref);
 
-int unfo_doc_ref_url_set(UNFO_DocRef *obj, char *val);
-int unfo_doc_ref_type_set(UNFO_DocRef *obj, char *val);
-int unfo_doc_ref_title_set(UNFO_DocRef *obj, char *val);
+int unfo_doc_ref_url_set(UNFO_DocRef *obj, const char *val);
+int unfo_doc_ref_type_set(UNFO_DocRef *obj, const char *val);
+int unfo_doc_ref_title_set(UNFO_DocRef *obj, const char *val);
 
 char* unfo_doc_ref_url_get(UNFO_DocRef *obj);
 char* unfo_doc_ref_type_get(UNFO_DocRef *obj);

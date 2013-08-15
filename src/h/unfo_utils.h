@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stddef.h>
+#include <ctype.h>
 
 #define UNFO_NORETURN
 
@@ -15,8 +16,9 @@
 #define CONCAT2(A, B) A ## B
 
 #define UNFO_CREATE_u(NAME, TYPE) void CONCAT(CONCAT(unfo_, NAME), _create_u)\
-                                                        (UNFO_Object* uobj) {\
-    CONCAT(CONCAT(unfo_, NAME),_create)((TYPE*)uobj);\
+                                                        (UNFO_Object *uobj,\
+                                                         UNFO_Object **args) {\
+    CONCAT(CONCAT(unfo_, NAME),_create)((TYPE*)uobj, args);\
 }
 
 #define UNFO_COPY_u(NAME, TYPE) UNFO_Object* CONCAT(CONCAT(unfo_,NAME),_copy_u)\
@@ -35,9 +37,9 @@
                                                          CONCAT(unfo_,\
                                                                 OBJNAME), _),\
                                                         ATTR), _set)\
-                                        (OBJTYPE * obj, char *val){\
+                                        (OBJTYPE * obj, const char *val){\
     if (!obj) return 0;\
-    unfo_rtree_set(obj->attrs, #ATTR, val);\
+    unfo_rtree_set(obj->attrs, #ATTR, (char*)val);\
     return 1;\
 }
 
@@ -67,6 +69,7 @@
     }
 
 void* __unfo_str_clone(void *str);
+char __unfo_iswhitespace(const char *str, int len);
 
 #endif
 
