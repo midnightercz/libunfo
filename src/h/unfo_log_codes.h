@@ -17,6 +17,8 @@
 #define UNFO_LOG_PARSE_ALLOC        7
 #define UNFO_LOG_PARSE_PARSER       8
 #define UNFO_LOG_PARSE_FREAD        9
+#define UNFO_LOG_XMLGEN             10
+#define UNFO_LOG_WRITEF             11
 
 #define LOG_TEST_CODE1              1001
 #define LOG_TEST_CODE2              1002

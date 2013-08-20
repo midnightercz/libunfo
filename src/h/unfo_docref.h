@@ -5,6 +5,10 @@
 #include "unfo_objlist.h"
 #include "unfo_dict.h"
 
+#include <libxml/encoding.h>
+#include <libxml/xmlwriter.h>
+#include <libxml/tree.h>
+
 typedef struct UNFO_DocRef {
     UNFO_Object_HEAD
     UNFO_RTree *attrs;
@@ -20,10 +24,14 @@ void unfo_doc_ref_destroy_u(UNFO_Object *docref);
 int unfo_doc_ref_url_set(UNFO_DocRef *obj, const char *val);
 int unfo_doc_ref_type_set(UNFO_DocRef *obj, const char *val);
 int unfo_doc_ref_title_set(UNFO_DocRef *obj, const char *val);
+int unfo_doc_ref_id_set(UNFO_DocRef *obj, const char *val);
 
 char* unfo_doc_ref_url_get(UNFO_DocRef *obj);
 char* unfo_doc_ref_type_get(UNFO_DocRef *obj);
 char* unfo_doc_ref_title_get(UNFO_DocRef *obj);
+char* unfo_doc_ref_id_get(UNFO_DocRef *obj);
+
+void unfo_doc_ref_xml(UNFO_Object *obj, xmlTextWriterPtr writer);
 
 extern UNFO_ObjectInfo UNFO_DocRef_ObjInfo;
 

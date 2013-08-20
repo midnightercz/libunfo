@@ -2,12 +2,14 @@
 #define UNFO_DOCPKG_H
 
 #include "unfo_types.h"
-
 #include "unfo_utils.h"
 #include "unfo_obj.h"
 #include "unfo_objlist.h"
 #include "unfo_dict.h"
 
+#include <libxml/encoding.h>
+#include <libxml/xmlwriter.h>
+#include <libxml/tree.h>
 
 void unfo_doc_pkg_create(UNFO_DocPkg* docpkg, UNFO_Object **args);
 void unfo_doc_pkg_create_u(UNFO_Object* uobj, UNFO_Object **args);
@@ -35,6 +37,9 @@ char* unfo_doc_pkg_src_get(UNFO_DocPkg *obj);
 char* unfo_doc_pkg_filename_get(UNFO_DocPkg *obj);
 char* unfo_doc_pkg_sum_get(UNFO_DocPkg *obj);
 char* unfo_doc_pkg_sumtype_get(UNFO_DocPkg *obj);
+
+void unfo_doc_pkg_xml(UNFO_Object *obj, xmlTextWriterPtr writer);
+
 extern UNFO_ObjectInfo UNFO_DocPkg_ObjInfo;
 
 #endif

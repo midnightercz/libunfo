@@ -11,19 +11,23 @@ set(libunfo_HEAD unfo.h unfo_doc.h unfo_docupdate.h unfo_objlist.h unfo_obj.h
 
 find_library(EXPAT_LIBRARY NAMES expat)
 find_package(EXPAT REQUIRED)
+include_directories(${EXPAT_INCLUDE_DIR})
+
+
+find_package(LibXml2 REQUIRED)
+message("xml2dirs ${LIBXML2_INCLUDE_DIR}")
+include_directories(${LIBXML2_INCLUDE_DIR})
+
+
+add_library(unfo SHARED ${libunfo_SRC})
+target_link_libraries(unfo m)
+target_link_libraries(unfo ${LIBXML2_LIBRARIES})
+target_link_libraries(unfo ${EXPAT_LIBRARY})
 
 if (${ZLIB_SUPPORT} STREQUAL YES)
     find_library(ZLIB_LIBRARY NAMES zlib)
     find_package(ZLIB REQUIRED)
     include_directories(${ZLIB_INCLUDE_DIRS})
-endif()
-
-include_directories(${EXPAT_INCLUDE_DIR})
-
-add_library(unfo SHARED ${libunfo_SRC})
-target_link_libraries(unfo m)
-if (${ZLIB_SUPPORT} STREQUAL YES)
     message("--- Linking with zlib support")
     target_link_libraries(unfo ${ZLIB_LIBRARIES})
 endif()
-target_link_libraries(unfo ${EXPAT_LIBRARY})

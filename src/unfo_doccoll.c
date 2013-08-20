@@ -11,8 +11,8 @@ UNFO_CREATE_u(doc_coll, UNFO_DocColl)
 
 UNFO_DocColl* unfo_doc_coll_copy(UNFO_DocColl *doccoll) {
     UNFO_DocColl *ret;
-    ret->pkgs = (UNFO_ObjList*) unfo_object_copy((UNFO_Object*)doccoll->pkgs);
     ret = (UNFO_DocColl*) unfo_object_copy((UNFO_Object*)doccoll);
+    ret->pkgs = (UNFO_ObjList*) unfo_object_copy((UNFO_Object*)doccoll->pkgs);
     return ret;
 }
 UNFO_COPY_u(doc_coll, UNFO_DocColl)
@@ -33,4 +33,17 @@ UNFO_ObjectInfo UNFO_DocColl_ObjInfo = {
     .deep_copy = &unfo_doc_coll_copy_u
 };
 
+void unfo_doc_coll_xml(UNFO_Object *obj, xmlTextWriterPtr writer) {
+    const char *val;
+    UNFO_ObjListIt *it;
 
+    xmlTextWriterStartElement(writer, BAD_CAST "collection");
+    val = unfo_doc_coll_short_get((UNFO_DocColl*)obj);
+    xmlTextWriterWriteAttribute(writer, BAD_CAST "short", BAD_CAST val);
+    xmlTextWriterStartElement(writer, BAD_CAST "name");
+    val = unfo_doc_coll_name_get((UNFO_DocColl*)obj);
+    xmlTextWriterWriteString(writer, BAD_CAST val);
+    xmlTextWriterEndElement(writer);
+
+    xmlTextWriterEndElement(writer);
+}

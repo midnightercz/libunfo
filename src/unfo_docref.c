@@ -23,6 +23,7 @@ UNFO_DESTROY_u(doc_ref, UNFO_DocRef)
 UNFO_GETSET_ATTR(UNFO_DocRef, doc_ref, url)
 UNFO_GETSET_ATTR(UNFO_DocRef, doc_ref, type)
 UNFO_GETSET_ATTR(UNFO_DocRef, doc_ref, title)
+UNFO_GETSET_ATTR(UNFO_DocRef, doc_ref, id)
 
 UNFO_ObjectInfo UNFO_DocRef_ObjInfo = {
     .obj_size = sizeof(UNFO_DocRef),
@@ -31,4 +32,19 @@ UNFO_ObjectInfo UNFO_DocRef_ObjInfo = {
     .deep_copy = &unfo_doc_ref_copy_u
 };
 
+void unfo_doc_ref_xml(UNFO_Object *obj, xmlTextWriterPtr writer) {
+    const char *val;
+    UNFO_ObjListIt *it;
 
+    xmlTextWriterStartElement(writer, BAD_CAST "reference");
+    val = unfo_doc_ref_url_get((UNFO_DocRef*)obj);
+    xmlTextWriterWriteAttribute(writer, BAD_CAST "href", BAD_CAST val);
+    val = unfo_doc_ref_type_get((UNFO_DocRef*)obj);
+    xmlTextWriterWriteAttribute(writer, BAD_CAST "type", BAD_CAST val);
+    val = unfo_doc_ref_title_get((UNFO_DocRef*)obj);
+    xmlTextWriterWriteAttribute(writer, BAD_CAST "title", BAD_CAST val);
+    val = unfo_doc_ref_id_get((UNFO_DocRef*)obj);
+    if (val)
+        xmlTextWriterWriteAttribute(writer, BAD_CAST "id", BAD_CAST val);
+    xmlTextWriterEndElement(writer);
+}

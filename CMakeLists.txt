@@ -14,5 +14,9 @@ set(ZLIB_SUPPORT YES)
 include_directories("${PROJECT_BINARY_DIR}")
 include_directories("${PROJECT_BINARY_DIR}/src")
 
+find_package(LibXml2 REQUIRED)
+message("xml2dirs ${LIBXML2_INCLUDE_DIR}")
+include_directories(${LIBXML2_INCLUDE_DIR})
+
 add_subdirectory(src)
 add_subdirectory(tests)

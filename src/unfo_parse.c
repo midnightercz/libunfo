@@ -108,8 +108,15 @@ signed char unfo_parse_file(char *filename,
     return result;
 }
 
-signed char unfo_parse_str(char *str) {
-    (void)str;
+signed char unfo_parse_str(char *str, UNFO_ParseData* parsed) {
+    if (!XML_Parse(parsed->parser, str, strlen(str), 1)) {
+        unfo_log_error_x(parsed->log, UNFO_LOG_PARSE_PARSER, 3,
+             unfo_str(XML_ErrorString(XML_GetErrorCode(parsed->parser))),
+             unfo_num(XML_GetCurrentLineNumber(parsed->parser)),
+             unfo_num(XML_GetCurrentColumnNumber(parsed->parser)));
+        return -1;
+    }
+    return 1;
 }
 
 void unfo_parse_check_attributes(UNFO_ParseData *parse_data,
@@ -140,8 +147,8 @@ void unfo_parse_check_attributes(UNFO_ParseData *parse_data,
     }
 
     //memset(processed, 0, sizeof(char) * i);
-    elem->attrs = malloc(sizeof(char*) * i);
-    elem->attrs_len = i;
+    elem->attrs = malloc(sizeof(char*) * i * 2);
+    elem->attrs_len = i * 2;
 
     if (attributes[0] != NULL) {
         process = 1;
@@ -153,13 +160,15 @@ void unfo_parse_check_attributes(UNFO_ParseData *parse_data,
     attrindex = 0;
     while (process) {
         process = 0;
+        printf("attr %s\n", attrs[attrindex]);
         for (i=0, current = attributes[0]; current != NULL;
              i++, current = attributes[i]) {
             if (!processed[i]) {
+                elem->attrs[i*2] = current->name;
+                elem->attrs[(i*2)+1] = NULL;
                 if (strcmp(current->name, attrs[attrindex]) == 0) {
-                    elem->attrs[i] = current->name;
                     processed[i] = 1;
-                    processed2[attrindex] = 1;
+                    processed2[attrindex/2] = 1;
                     if (current->val_check &&
                         !current->val_check(attrs[attrindex+1])) {
 
@@ -168,9 +177,11 @@ void unfo_parse_check_attributes(UNFO_ParseData *parse_data,
                                          UNFO_LOG_ATTR_VALERROR, 4,
                                          str1, str2, num1, num2);
                         unfo_object_destroy((UNFO_Object*)str2);
-                        elem->attrs[i] = NULL;
+                        elem->attrs[i*2] = attrs[attrindex];
+                        elem->attrs[(i*2)+1] = NULL;
                     } else {
-                        elem->attrs[i] = attrs[attrindex+1];
+                        elem->attrs[i*2] = attrs[attrindex];
+                        elem->attrs[(i*2)+1] = attrs[attrindex+1];
                     }
                 }
                 process = 1;
@@ -188,11 +199,11 @@ void unfo_parse_check_attributes(UNFO_ParseData *parse_data,
             unfo_object_destroy((UNFO_Object*)str2);
         }
     }
-    for (i=0, tmp = attrs[0]; current != NULL; current++, i++) {
-        if (!processed2[i]) {
-            str2 = unfo_str(current->name);
+    for (i=0, tmp = attrs[0]; tmp != NULL; i+=2, tmp = attrs[i]) {
+        if (!processed2[i/2]) {
+            str2 = unfo_str(tmp);
             unfo_log_warning(parse_data->log, UNFO_LOG_ATTR_UNKNOWN,
-                             4, str1, str2, num1, num2);
+                             4, str2, str1, num1, num2);
             unfo_object_destroy((UNFO_Object*)str2);
         }
     }
@@ -226,7 +237,7 @@ void unfo_parse_start_elem_handler(void *userData, const XML_Char *s,
         str1 = unfo_str((const char*)s);
         str3 = unfo_str((const char*)UNFO_ElemInfos[ELEMINFO->ancestor]->name);
         num1 = unfo_num(parser_line);
-        num2 = unfo_num(parser_line);
+        num2 = unfo_num(parser_col);
         if (LAST && LASTELEM->type != ELEMINFO->ancestor) {
             str2 = unfo_str(UNFO_ElemInfos[LASTELEM->type]->name);
             unfo_log_warning(PARSEDATA->log, UNFO_LOG_WRONG_PARENT, 5,

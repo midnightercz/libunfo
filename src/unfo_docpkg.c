@@ -36,3 +36,32 @@ UNFO_ObjectInfo UNFO_DocPkg_ObjInfo = {
     .deep_copy = &unfo_doc_pkg_copy_u
 };
 
+void unfo_doc_pkg_xml(UNFO_Object *obj, xmlTextWriterPtr writer) {
+    const char *val;
+
+    xmlTextWriterStartElement(writer, BAD_CAST "package");
+    val = unfo_doc_pkg_name_get((UNFO_DocPkg*)obj);
+    xmlTextWriterWriteAttribute(writer, BAD_CAST "name", BAD_CAST val);
+    val = unfo_doc_pkg_version_get((UNFO_DocPkg*)obj);
+    xmlTextWriterWriteAttribute(writer, BAD_CAST "version", BAD_CAST val);
+    val = unfo_doc_pkg_release_get((UNFO_DocPkg*)obj);
+    xmlTextWriterWriteAttribute(writer, BAD_CAST "release", BAD_CAST val);
+    val = unfo_doc_pkg_epoch_get((UNFO_DocPkg*)obj);
+    xmlTextWriterWriteAttribute(writer, BAD_CAST "epoch", BAD_CAST val);
+    val = unfo_doc_pkg_arch_get((UNFO_DocPkg*)obj);
+    xmlTextWriterWriteAttribute(writer, BAD_CAST "arch", BAD_CAST val);
+    val = unfo_doc_pkg_src_get((UNFO_DocPkg*)obj);
+    xmlTextWriterWriteAttribute(writer, BAD_CAST "src", BAD_CAST val);
+    xmlTextWriterStartElement(writer, BAD_CAST "filename");
+    val = unfo_doc_pkg_filename_get((UNFO_DocPkg*)obj);
+    xmlTextWriterWriteString(writer, BAD_CAST val);
+    xmlTextWriterEndElement(writer);
+    xmlTextWriterStartElement(writer, BAD_CAST "sum");
+    val = unfo_doc_pkg_sumtype_get((UNFO_DocPkg*)obj);
+    xmlTextWriterWriteAttribute(writer, BAD_CAST "type", BAD_CAST val);
+    val = unfo_doc_pkg_sum_get((UNFO_DocPkg*)obj);
+    xmlTextWriterWriteString(writer, BAD_CAST val);
+    xmlTextWriterEndElement(writer);
+
+    xmlTextWriterEndElement(writer);
+}

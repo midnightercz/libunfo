@@ -70,6 +70,7 @@
 
 void* __unfo_str_clone(void *str);
 char __unfo_iswhitespace(const char *str, int len);
+int __unfo_strcmp(const char *str1, const char *str2);
 
 #endif
 

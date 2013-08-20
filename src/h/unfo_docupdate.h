@@ -3,15 +3,19 @@
 
 //#define __USE_XOPEN_EXTENDED 1
 #define _XOPEN_SOURCE 500
-
 #include <time.h>
 
-
 #include "unfo_types.h"
-
 #include "unfo_utils.h"
 #include "unfo_docpkg.h"
 #include "unfo_docref.h"
+#include "unfo_doccoll.h"
+
+
+#include <libxml/encoding.h>
+#include <libxml/xmlwriter.h>
+#include <libxml/tree.h>
+
 
 void unfo_doc_update_create(UNFO_DocUpdate *docupdate, UNFO_Object **args);
 void unfo_doc_update_create_u(UNFO_Object *uobj, UNFO_Object **args);
@@ -44,8 +48,10 @@ char* unfo_doc_update_solution_get(UNFO_DocUpdate *obj);
 
 char* unfo_doc_update_updated_get(UNFO_DocUpdate *docupdate);
 char* unfo_doc_update_issued_get(UNFO_DocUpdate *docupdate);
-int unfo_doc_update_issued_set(UNFO_DocUpdate *docupdate, char *date);
-int unfo_doc_update_updated_set(UNFO_DocUpdate *docupdate, char *date);
+int unfo_doc_update_updated_set(UNFO_DocUpdate *docupdate, const char *date);
+int unfo_doc_update_issued_set(UNFO_DocUpdate *docupdate, const char *date);
+
+void unfo_doc_update_xml(UNFO_Object *obj, xmlTextWriterPtr writer);
 
 extern UNFO_ObjectInfo UNFO_DocUpdate_ObjInfo;
 

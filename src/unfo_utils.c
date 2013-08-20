@@ -13,3 +13,12 @@ inline char __unfo_iswhitespace(const char *str, int len) {
     }
     return 1;
 }
+
+int __unfo_strcmp(const char *str1, const char *str2) {
+    if (!str1 && !str2)
+        return 1;
+    else if (!str1 || !str2)
+        return 0;
+    else if (!str1 || !str2)
+        return strcmp(str1, str2) == 0;
+}

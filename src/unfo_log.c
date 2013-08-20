@@ -9,8 +9,8 @@ const char * UNFO_LogCodeFormat[] = {
                 [LOG_TEST_CODE6] = "noarg log message",
                 [UNFO_LOG_WRONG_PARENT] = "Element %s has wrong parent %s "
                                           "(should has %s) at line:%s column:%s",
-                [UNFO_LOG_ATTR_UNKNOWN] = "Element %s has wrong parent %s "
-                                          "(should has %s) at line:%s column:%s",
+                [UNFO_LOG_ATTR_UNKNOWN] = "Unkown attribute %s within element %s"
+                                          " at line:%s column:%s",
                 [UNFO_LOG_ATTR_MISSING] = "Element %s attribute %s missing "
                                           "at line:%s column:%s",
                 [UNFO_LOG_PARSE_FERROR] = "Couldn't parse file. File error: %s",
@@ -18,6 +18,8 @@ const char * UNFO_LogCodeFormat[] = {
                 [UNFO_LOG_PARSE_ALLOC] = "Couldn't allocate buffer for parsing",
                 [UNFO_LOG_PARSE_PARSER] = "Couldn't parse. Parser problem:%s"
                                           "at line:%s column:%s",
+                [UNFO_LOG_XMLGEN] = "Cannot generate xml",
+                [UNFO_LOG_WRITEF] = "Can't write to file %s"
                     };
 
 void unfo_log_create(UNFO_Log *log, UNFO_Object **args){
