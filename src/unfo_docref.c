@@ -34,7 +34,7 @@ UNFO_ObjectInfo UNFO_DocRef_ObjInfo = {
 
 void unfo_doc_ref_xml(UNFO_Object *obj, xmlTextWriterPtr writer) {
     const char *val;
-    UNFO_ObjListIt *it;
+    //UNFO_ObjListIt *it;
 
     xmlTextWriterStartElement(writer, BAD_CAST "reference");
     val = unfo_doc_ref_url_get((UNFO_DocRef*)obj);

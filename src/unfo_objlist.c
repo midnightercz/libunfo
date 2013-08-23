@@ -225,6 +225,36 @@ int unfo_objlist_insert_at(UNFO_ObjList *objlist,
     return 1;
 }
 
+int unfo_objlist_remove_at(UNFO_ObjList *objlist, unsigned int atpos) {
+    int pos;
+    UNFO_ObjListIt *it, *itprev = NULL;
+    UNFO_Check_NULL(objlist, 0)
+
+    for (it = objlist->first, pos=-1;
+         it != NULL && pos != (int)atpos;
+         it = it->next, pos++) {
+        itprev = it;
+    }
+    if (pos != (int)(atpos-1))
+        return 0;
+
+    if (itprev == NULL) {
+        if (objlist->last == objlist->first)
+            objlist->last = NULL;
+        objlist->first = objlist->first->next;
+        unfo_object_destroy(it->unfo_obj);
+        free(it);
+    } else {
+        itprev->next = it->next;
+        unfo_object_destroy(it->unfo_obj);
+        free(it);
+        if (it == objlist->last) {
+            objlist->last = itprev;
+        }
+    }
+}
+
+
 UNFO_ObjList* unfo_objlist_sublist_it(UNFO_ObjListIt *startit,
                                       UNFO_ObjListIt *end) {
     UNFO_ObjList *ret;
@@ -311,9 +341,39 @@ UNFO_ObjList* unfo_objlist_filter(UNFO_ObjList *list,
     return ret;
 }
 
+UNFO_ObjList* unfo_objlist_concat(UNFO_ObjList *list1, UNFO_ObjList *list2) {
+    UNFO_ObjList *ret;
+    UNFO_ObjListIt *it;
+
+    ret = (UNFO_ObjList*)unfo_object_create(&UNFO_ObjList_ObjInfo, NULL);
+    for (it = list1->first; it != NULL; it = it->next) {
+        unfo_objlist_append(ret, it->unfo_obj);
+    }
+    for (it = list2->first; it != NULL; it = it->next) {
+        unfo_objlist_append(ret, it->unfo_obj);
+    }
+    return ret;
+}
+
+signed char unfo_objlist_cmp(UNFO_Object *list1, UNFO_Object *list2) {
+    UNFO_ObjListIt *it, *it2;
+    it =  (UNFO_ObjList*)list1;
+    it2 =  (UNFO_ObjList*)list2;
+    
+    for (; it != NULL && it2 != NULL; it = it->next, it2 = it2->next) {
+        if (!unfo_object_cmp(it->unfo_obj, it2->unfo_obj))
+            return 0;
+    }
+    if (!it && !it2)
+        return 1;
+    else
+        return 0;
+}
+
 UNFO_ObjectInfo UNFO_ObjList_ObjInfo = {
     .obj_size = sizeof(UNFO_ObjList),
     .constructor = &unfo_objlist_create_u,
     .destructor = &unfo_objlist_destroy_u,
-    .deep_copy = &unfo_objlist_copy_u
+    .deep_copy = &unfo_objlist_copy_u,
+    .obj_cmp = &unfo_objlist_cmp
 };

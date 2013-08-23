@@ -31,3 +31,6 @@ if (${ZLIB_SUPPORT} STREQUAL YES)
     message("--- Linking with zlib support")
     target_link_libraries(unfo ${ZLIB_LIBRARIES})
 endif()
+
+
+add_subdirectory(python)

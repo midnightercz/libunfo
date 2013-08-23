@@ -1,8 +1,10 @@
 #ifndef UNFO_DOCUPDATE_H
 #define UNFO_DOCUPDATE_H
 
-//#define __USE_XOPEN_EXTENDED 1
+#ifndef _XOPEN_SOURCE
 #define _XOPEN_SOURCE 500
+#endif
+
 #include <time.h>
 
 #include "unfo_types.h"

@@ -60,25 +60,27 @@ char* unfo_doc_update_updated_get(UNFO_DocUpdate *docupdate) {
 }
 
 int unfo_doc_update_updated_set(UNFO_DocUpdate *docupdate, const char *date) {
-    struct tm *timeinfo;
-    timeinfo = getdate(date);
-    if (!timeinfo) return 0;
-    timeinfo = __unfo_date_clone(timeinfo);
-    printf("%d %d %d\n", timeinfo->tm_sec, timeinfo->tm_min, timeinfo->tm_hour);
-    unfo_rtree_set(docupdate->date_attrs, "updated", timeinfo);
+    struct tm timeinfo, *timeinfo2;
+    printf("DATE %s\n", date);
+    if (strptime(date, "%Y-%d-%m %H:%M:%S", &timeinfo) == NULL) {
+        printf("failed to parse\n");
+        return 0;
+    }
+    timeinfo2 = __unfo_date_clone(&timeinfo);
+    unfo_rtree_set(docupdate->date_attrs, "updated", timeinfo2);
     return 1;
 }
 
 char* unfo_doc_update_issued_get(UNFO_DocUpdate *docupdate) {
     struct tm *timeinfo;
     char *ret;
-    ret = malloc(sizeof(char)*30);
+    ret = malloc(sizeof(char)*20);
     UNFO_Check_Malloc(ret, NULL)
 
     timeinfo = (struct tm*)unfo_rtree_get(docupdate->date_attrs, "updated");
     if (!timeinfo) return "";
     printf("%d %d %d\n", timeinfo->tm_sec, timeinfo->tm_min, timeinfo->tm_hour);
-    strftime(ret, 30, "%F %T", timeinfo);
+    strftime(ret, 20, "%F %T", timeinfo);
     return ret;
 }
 

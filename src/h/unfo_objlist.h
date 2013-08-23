@@ -64,6 +64,7 @@ UNFO_Object* unfo_objlist_get(UNFO_ObjList *objlist, unsigned int atpos);
 int unfo_objlist_insert_at(UNFO_ObjList *objlist,
                            unsigned int pos,
                            UNFO_Object *obj);
+int unfo_objlist_remove_at(UNFO_ObjList *objlist, unsigned int atpos);
 UNFO_ObjList* unfo_objlist_sublist_it(UNFO_ObjListIt *startit,
                                       UNFO_ObjListIt *end);
 UNFO_ObjList* unfo_objlist_filter(UNFO_ObjList *list,
