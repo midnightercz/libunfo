@@ -19,6 +19,6 @@ int __unfo_strcmp(const char *str1, const char *str2) {
         return 1;
     else if (!str1 || !str2)
         return 0;
-    else if (!str1 || !str2)
+    else
         return strcmp(str1, str2) == 0;
 }

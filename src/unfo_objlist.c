@@ -252,6 +252,7 @@ int unfo_objlist_remove_at(UNFO_ObjList *objlist, unsigned int atpos) {
             objlist->last = itprev;
         }
     }
+    return 1;
 }
 
 
@@ -357,8 +358,9 @@ UNFO_ObjList* unfo_objlist_concat(UNFO_ObjList *list1, UNFO_ObjList *list2) {
 
 signed char unfo_objlist_cmp(UNFO_Object *list1, UNFO_Object *list2) {
     UNFO_ObjListIt *it, *it2;
-    it =  (UNFO_ObjList*)list1;
-    it2 =  (UNFO_ObjList*)list2;
+    if (!list1 || !list2) return -1;
+    it =  ((UNFO_ObjList*)list1)->first;
+    it2 =  ((UNFO_ObjList*)list2)->first;
     
     for (; it != NULL && it2 != NULL; it = it->next, it2 = it2->next) {
         if (!unfo_object_cmp(it->unfo_obj, it2->unfo_obj))

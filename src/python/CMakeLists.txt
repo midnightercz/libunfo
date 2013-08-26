@@ -1,9 +1,9 @@
-if (python_version_required STREQUAL "2")
-    find_package(PythonLibs 2.7)
-    find_package(PythonInterp 2.7 REQUIRED)
-else()
+if (python_version_required STREQUAL "3")
     find_package(PythonLibs 3)
     find_package(PythonInterp 3 REQUIRED)
+else()
+    find_package(PythonLibs 2.7)
+    find_package(PythonInterp 2.7 REQUIRED)
 endif()
 
 execute_process (COMMAND ${PYTHON_EXECUTABLE} -c "from sys import stdout; from distutils import sysconfig; stdout.write(sysconfig.get_python_lib(True))" OUTPUT_VARIABLE PYTHON_INSTALL_DIR)
@@ -11,6 +11,11 @@ execute_process (COMMAND ${PYTHON_EXECUTABLE} -c "from sys import stdout; from d
 include_directories(${PYTHON_INCLUDE_PATH})
 include_directories(${LIBUNFO_INCLUDE_PATH})
 include_directories("${PROJECT_SOURCE_DIR}/src")
+
+set(test_files test.py)
+foreach (file ${test_files})
+    file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/tests/${file}" DESTINATION "./libunfo/")
+endforeach(file ${test_files})
 
 
 set(pyunfo_SRC pyunfo.c pyunfo_doc.c pyunfo_docupdate.c pyunfo_utils.c

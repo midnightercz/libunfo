@@ -13,9 +13,7 @@ find_library(EXPAT_LIBRARY NAMES expat)
 find_package(EXPAT REQUIRED)
 include_directories(${EXPAT_INCLUDE_DIR})
 
-
 find_package(LibXml2 REQUIRED)
-message("xml2dirs ${LIBXML2_INCLUDE_DIR}")
 include_directories(${LIBXML2_INCLUDE_DIR})
 
 
