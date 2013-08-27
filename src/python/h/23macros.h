@@ -1,6 +1,8 @@
 #ifndef MACROS23_H
 #define MACROS23_H
 
+#include <Python.h>
+
 #if PY_MAJOR_VERSION >= 3
     #define MODINIT_RET_NONE return NULL
     #define PY_OBJ_HEAD_INIT PyVarObject_HEAD_INIT(NULL, 0)

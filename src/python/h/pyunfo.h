@@ -1,7 +1,7 @@
 #ifndef PYUNFO_H
 #define PYUNFO_H
 
-#define MODULE_NAME "pyunfo"
+#define MODULE_NAME "_libpyunfo"
 #define MODULE_DESC "pyupdateinfo module"
 
 #include <Python.h>

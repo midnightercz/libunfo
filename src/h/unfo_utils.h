@@ -6,6 +6,7 @@
 #include <stddef.h>
 #include <ctype.h>
 
+
 #define UNFO_NORETURN
 
 #define UNFO_Check_NULL(OBJ, RET) if (OBJ == NULL) return RET;
@@ -31,27 +32,29 @@
     CONCAT(CONCAT(unfo_, NAME),_destroy) ((TYPE*)obj);\
 }
 
-#define UNFO_SET_ATTR(OBJTYPE, OBJNAME, ATTR) int CONCAT(\
-                                                     CONCAT(\
-                                                       CONCAT(\
-                                                         CONCAT(unfo_,\
-                                                                OBJNAME), _),\
-                                                        ATTR), _set)\
+#define UNFO_SET_ATTR(OBJTYPE, OBJNAME, ATTR) \
+int CONCAT(CONCAT(CONCAT(CONCAT(unfo_, OBJNAME), _), ATTR), _set)\
                                         (OBJTYPE * obj, const char *val){\
     if (!obj) return 0;\
     unfo_rtree_set(obj->attrs, #ATTR, (char*)val);\
     return 1;\
+}\
+int CONCAT(CONCAT(CONCAT(CONCAT(unfo_, OBJNAME), _), ATTR), _set_u)\
+                                        (UNFO_Object * obj, const char *val){\
+   return CONCAT(CONCAT(CONCAT(CONCAT(unfo_, OBJNAME), _), ATTR), _set)\
+                                                        ((OBJTYPE*)obj, val);\
 }
 
-#define UNFO_GET_ATTR(OBJTYPE, OBJNAME, ATTR) char* CONCAT(\
-                                                     CONCAT(\
-                                                       CONCAT(\
-                                                         CONCAT(unfo_,\
-                                                                OBJNAME), _),\
-                                                        ATTR), _get)\
+#define UNFO_GET_ATTR(OBJTYPE, OBJNAME, ATTR)\
+char* CONCAT(CONCAT(CONCAT(CONCAT(unfo_, OBJNAME), _), ATTR), _get)\
                                         (OBJTYPE * obj){\
     if (!obj) return NULL;\
     return (char*) unfo_rtree_get(obj->attrs, #ATTR);\
+}\
+char* CONCAT(CONCAT(CONCAT(CONCAT(unfo_, OBJNAME), _), ATTR), _get_u)\
+                                        (UNFO_Object * obj){\
+    return CONCAT(CONCAT(CONCAT(CONCAT(unfo_, OBJNAME), _), ATTR), _get)\
+                                        ((OBJTYPE*)obj);\
 }
 
 #define UNFO_GETSET_ATTR(OBJTYPE, OBJNAME, ATTR) UNFO_GET_ATTR(OBJTYPE,\

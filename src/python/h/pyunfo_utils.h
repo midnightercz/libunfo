@@ -5,6 +5,8 @@
 
 #include "pyunfo_objlist.h"
 
+#include "libunfo/unfo_obj.h"
+
 #define CONCAT(A,B) CONCAT2(A, B)
 #define CONCAT2(A, B) A ## B
 
@@ -56,5 +58,30 @@ int CONCAT(CONCAT(PyUNFO_, OBJNAME), _init)(PTYPE *self,\
         else return Py_INCREF(Py_NotImplemented), Py_NotImplemented;\
     }\
 }
+
+#define PYUNFO_STR_GETSET_CLOSURE(PNAME, CNAME, OFFSET, ATTR)\
+PyUNFO_StrGetSet_Closure CONCAT(CONCAT(CONCAT(CONCAT(PyUNFO_, PNAME),_), ATTR), _closure) = {\
+    .c_offset = OFFSET,\
+    .getter = CONCAT(CONCAT(CONCAT(CONCAT(&unfo_, CNAME), _), ATTR), _get_u),\
+    .setter = CONCAT(CONCAT(CONCAT(CONCAT(&unfo_, CNAME), _), ATTR), _set_u),\
+    .name = #ATTR\
+};
+
+typedef struct PyUNFO_StrGetSet_Closure {
+    size_t c_offset;
+    char* (*getter)(UNFO_Object*);
+    int (*setter)(UNFO_Object*, const char*);
+    const char *name;
+} PyUNFO_StrGetSet_Closure;
+
+typedef struct PyUNFO_ObjListGetSet_Closure {
+    size_t c_offset;
+    size_t l_offset;
+    const char *name;
+} PyUNFO_ObjListGetSet_Closure;
+
+const char * Py2Str(PyObject *obj);
+PyObject* pyunfo_strattr_getter(PyObject *self, void *closure);
+int pyunfo_strattr_setter(PyObject *self, PyObject *other, void *closure);
 
 #endif

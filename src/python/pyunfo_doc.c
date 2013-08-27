@@ -29,7 +29,7 @@ static PyMethodDef PyUNFO_Doc_methods[] = {
 
 PyTypeObject PyUNFO_Doc_Type = {
     PY_OBJ_HEAD_INIT
-    "libpyunfo.Doc",             /*tp_name*/
+    "libunfo.Doc",             /*tp_name*/
     sizeof(PyUNFO_Doc), /*tp_basicsize*/
     0,                         /*tp_itemsize*/
     (destructor)PyUNFO_Doc_dealloc, /*tp_dealloc*/
