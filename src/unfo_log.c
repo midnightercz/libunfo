@@ -14,6 +14,7 @@ const char * UNFO_LogCodeFormat[] = {
                 [UNFO_LOG_ATTR_MISSING] = "Element %s attribute %s missing "
                                           "at line:%s column:%s",
                 [UNFO_LOG_PARSE_FERROR] = "Couldn't parse file. File error: %s",
+                [UNFO_LOG_PARSE_FOPEN] = "Couldn't parse file. Coudn't open: %s",
                 [UNFO_LOG_PARSE_FREAD] = "Couldn't parse file. Couldn't read file",
                 [UNFO_LOG_PARSE_ALLOC] = "Couldn't allocate buffer for parsing",
                 [UNFO_LOG_PARSE_PARSER] = "Couldn't parse. Parser problem:%s"

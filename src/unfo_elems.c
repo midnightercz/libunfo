@@ -253,16 +253,16 @@ void unfo_elem_update_preproc(UNFO_ParseData *data, UNFO_ParseElem *elem) {
     update = (UNFO_DocUpdate*)unfo_object_create(&UNFO_DocUpdate_ObjInfo, NULL);
     unfo_objlist_append_x(data->unfo_doc->updates, (UNFO_Object*)update);
     for (unsigned int i = 0; i < elem->attrs_len; i += 2) {
-        if (__unfo_strcmp(elem->attrs[i], "from") == 0) {
+        if (__unfo_strcmp(elem->attrs[i], "from") == 1) {
             if (elem->attrs[i+1])
                 unfo_doc_update_from_set(update, elem->attrs[i+1]);
-        } else if (strcmp(elem->attrs[i], "status") == 0) {
+        } else if (__unfo_strcmp(elem->attrs[i], "status") == 1) {
             if (elem->attrs[i+1])
                 unfo_doc_update_status_set(update, elem->attrs[i+1]);
-        } else if (strcmp(elem->attrs[i], "type") == 0) {
+        } else if (__unfo_strcmp(elem->attrs[i], "type") == 1) {
             if (elem->attrs[i+1])
                 unfo_doc_update_type_set(update, elem->attrs[i+1]);
-        } else if (strcmp(elem->attrs[i], "version") == 0) {
+        } else if (__unfo_strcmp(elem->attrs[i], "version") == 1) {
             if (elem->attrs[i+1])
                 unfo_doc_update_version_set(update, elem->attrs[i+1]);
         }
@@ -313,7 +313,7 @@ void unfo_elem_sum_preproc(UNFO_ParseData *data, UNFO_ParseElem *elem) {
     #define LASTCOLL ((UNFO_DocColl*)LASTUPDATE->colls->last->unfo_obj)
     #define LASTPKG ((UNFO_DocPkg*)LASTCOLL->pkgs->last->unfo_obj)
     for (unsigned int i = 0; i < elem->attrs_len; i += 2) {
-        if (strcmp(elem->attrs[i], "short") == 0) {
+        if (strcmp(elem->attrs[i], "type") == 0) {
             if (elem->attrs[i+1])
                 unfo_doc_pkg_sumtype_set(LASTPKG, elem->attrs[i+1]);
         }

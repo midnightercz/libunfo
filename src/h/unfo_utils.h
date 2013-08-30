@@ -5,7 +5,9 @@
 #include <string.h>
 #include <stddef.h>
 #include <ctype.h>
+#include <stdio.h>
 
+#include "unfo_dict.h"
 
 #define UNFO_NORETURN
 
@@ -30,6 +32,12 @@
 #define UNFO_DESTROY_u(NAME, TYPE) void CONCAT(CONCAT(unfo_, NAME), _destroy_u)\
                                                             (UNFO_Object* obj){\
     CONCAT(CONCAT(unfo_, NAME),_destroy) ((TYPE*)obj);\
+}
+
+#define UNFO_CMP_u(NAME, TYPE) signed char CONCAT(CONCAT(unfo_, NAME), _cmp_u)\
+                                                           (UNFO_Object* obj1,\
+                                                            UNFO_Object* obj2){\
+    return CONCAT(CONCAT(unfo_, NAME),_cmp) ((TYPE*)obj1, (TYPE*)obj2);\
 }
 
 #define UNFO_SET_ATTR(OBJTYPE, OBJNAME, ATTR) \
@@ -74,6 +82,7 @@ char* CONCAT(CONCAT(CONCAT(CONCAT(unfo_, OBJNAME), _), ATTR), _get_u)\
 void* __unfo_str_clone(void *str);
 char __unfo_iswhitespace(const char *str, int len);
 int __unfo_strcmp(const char *str1, const char *str2);
+char *attrs2str(UNFO_RTree *attrs, const char *kwds[], int kwds_len);
 
 #endif
 

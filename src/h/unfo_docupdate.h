@@ -23,6 +23,8 @@ void unfo_doc_update_create(UNFO_DocUpdate *docupdate, UNFO_Object **args);
 void unfo_doc_update_create_u(UNFO_Object *uobj, UNFO_Object **args);
 UNFO_DocUpdate* unfo_doc_update_copy(UNFO_DocUpdate *docupdate);
 UNFO_Object* unfo_doc_update_copy_u(UNFO_Object *docupdate);
+char* unfo_doc_update_str_u(UNFO_Object *obj);
+signed char unfo_doc_update_cmp_u(UNFO_Object *obj1, UNFO_Object *obj2);
 void unfo_doc_update_destroy(UNFO_DocUpdate *doc);
 void unfo_doc_update_destroy_u(UNFO_Object *doc);
 

@@ -68,6 +68,7 @@ START_TEST(test_parse2) {
     UNFO_Log *log = (UNFO_Log*)unfo_object_create(&UNFO_Log_ObjInfo, NULL);
     unfo_doc_xml_f(parse_data->unfo_doc, "generated.xml", "UTF-8", log);
 
+    unfo_object_destroy((UNFO_Object*)log);
     unfo_parse_data_destroy(parse_data);
 
 } END_TEST

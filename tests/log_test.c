@@ -8,7 +8,6 @@ START_TEST(test_log) {
     UNFO_Log *log;
     UNFO_Num *num1, *num2, *num3;
     UNFO_Str *ustr;
-    char *str;
 
     log = (UNFO_Log*) unfo_object_create(&UNFO_Log_ObjInfo, NULL);
 

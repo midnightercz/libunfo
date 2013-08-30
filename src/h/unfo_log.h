@@ -14,6 +14,7 @@ void unfo_log_destroy_u(UNFO_Object *log);
 
 UNFO_LogEntry *unfo_log_entry_create();
 void unfo_log_entry_destroy();
+char* unfo_log_entry_str(UNFO_LogEntry *log_entry);
 
 
 void unfo_log_error(UNFO_Log *log, int code, int n, ...);

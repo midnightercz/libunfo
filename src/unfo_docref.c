@@ -19,6 +19,38 @@ void unfo_doc_ref_destroy(UNFO_DocRef *docref){
 }
 UNFO_DESTROY_u(doc_ref, UNFO_DocRef)
 
+char* unfo_doc_ref_str(UNFO_DocRef *obj) {
+    char *ret, *tmp;
+    int len;
+    const int wrap = strlen("<UNFO_DocRef >");
+    static const char *attrs[] = {"url", "type", "title", "id"};
+    tmp = attrs2str(obj->attrs, attrs, 4);
+    len = strlen(tmp);
+    ret = malloc(sizeof(char) * (len + wrap + 1));
+    sprintf(ret, "<UNFO_DocRef %s>", tmp);
+    free(tmp);
+    return ret;
+}
+
+char* unfo_doc_ref_str_u(UNFO_Object *obj) {
+    return unfo_doc_ref_str((UNFO_DocRef*)obj);
+}
+
+signed char unfo_doc_ref_cmp(UNFO_DocRef* ref1, UNFO_DocRef *ref2){
+    static const char *attrs[] = {"url", "type", "title", "id"};
+    static int attrs_len = 4;
+    int i;
+    char *tmp1, *tmp2;
+
+    for (i = 0; i < attrs_len; i++) {
+        tmp1 = unfo_rtree_get(ref1->attrs, attrs[i]);
+        tmp2 = unfo_rtree_get(ref2->attrs, attrs[i]);
+        if (!__unfo_strcmp(tmp1, tmp2))
+            return 0;
+    }
+    return 1;
+}
+UNFO_CMP_u(doc_ref, UNFO_DocRef)
 
 UNFO_GETSET_ATTR(UNFO_DocRef, doc_ref, url)
 UNFO_GETSET_ATTR(UNFO_DocRef, doc_ref, type)
@@ -29,7 +61,9 @@ UNFO_ObjectInfo UNFO_DocRef_ObjInfo = {
     .obj_size = sizeof(UNFO_DocRef),
     .constructor = &unfo_doc_ref_create_u,
     .destructor = &unfo_doc_ref_destroy_u,
-    .deep_copy = &unfo_doc_ref_copy_u
+    .deep_copy = &unfo_doc_ref_copy_u,
+    .to_str = &unfo_doc_ref_str_u,
+    .obj_cmp = &unfo_doc_ref_cmp_u
 };
 
 void unfo_doc_ref_xml(UNFO_Object *obj, xmlTextWriterPtr writer) {

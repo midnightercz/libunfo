@@ -161,6 +161,37 @@ START_TEST(test_objlist_sublist) {
     unfo_object_destroy((UNFO_Object*)list3);
 }END_TEST
 
+START_TEST(test_objlist_remove) {
+    UNFO_ObjList *list;
+    UNFO_Object *testobj1;
+    char *names[] = {"test1", "test2", "test3", "test4", "test5", "test6",
+                     "test7", "test8", "test9", "test10"};
+    int ret;
+
+    list = (UNFO_ObjList*)unfo_object_create(&UNFO_ObjList_ObjInfo, NULL);
+    for (unsigned int x = 0; x < 10; x++) {
+        testobj1 = unfo_object_create(&TestObj_ObjInfo, NULL);
+        testobj_set_name((TestObj*)testobj1, names[x]);
+        unfo_objlist_append(list, testobj1);
+        unfo_object_destroy(testobj1);
+    }
+    ret = unfo_objlist_remove_at(list, 0);
+    ck_assert(ret == 1);
+    testobj1 = unfo_objlist_get(list, 0);
+    ck_assert_msg(strcmp(((TestObj*)testobj1)->name, "test2") == 0,
+                  "zero item should be 'test2' instead of '%s'",
+                   ((TestObj*)testobj1)->name);
+    unfo_object_destroy(testobj1);
+
+    ret = unfo_objlist_remove_at(list, 8);
+    ck_assert(ret == 1);
+    testobj1 = unfo_objlist_get(list, 8);
+    ck_assert_msg(testobj1 == NULL,
+                  "8th item should be NULL");
+    unfo_object_destroy(testobj1);
+    unfo_object_destroy((UNFO_Object*)list);
+}END_TEST
+
 Suite* basic_suite(void) {
     Suite *s = suite_create("basic tests");
     TCase *tc_core = tcase_create("Core");
@@ -168,6 +199,7 @@ Suite* basic_suite(void) {
     tcase_add_test(tc_core, test_objlist_append);
     tcase_add_test(tc_core, test_objlist_insert);
     tcase_add_test(tc_core, test_objlist_sublist);
+    tcase_add_test(tc_core, test_objlist_remove);
     suite_add_tcase(s, tc_core);
     return s;
 }

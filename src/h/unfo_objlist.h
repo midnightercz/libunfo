@@ -48,6 +48,7 @@ void unfo_objlist_create(UNFO_ObjList *objlist, UNFO_Object **args);
 void unfo_objlist_create_u(UNFO_Object *uobj, UNFO_Object **args);
 void unfo_objlist_destroy(UNFO_ObjList *objlist);
 void unfo_objlist_destroy_u(UNFO_Object *objlist);
+void unfo_objlist_clear(UNFO_ObjList *objlist);
 
 
 const UNFO_ObjListIt *unfo_objlist_it_next(const UNFO_ObjListIt *it);
@@ -61,6 +62,7 @@ int unfo_objlist_walk_r(UNFO_ObjListIt *walker_start,
 int unfo_objlist_append_x(UNFO_ObjList *objlist, UNFO_Object *obj);
 int unfo_objlist_append(UNFO_ObjList *objlist, UNFO_Object *obj);
 UNFO_Object* unfo_objlist_get(UNFO_ObjList *objlist, unsigned int atpos);
+UNFO_Object* unfo_objlist_get_x(UNFO_ObjList *objlist, unsigned int atpos);
 int unfo_objlist_insert_at(UNFO_ObjList *objlist,
                            unsigned int pos,
                            UNFO_Object *obj);

@@ -66,12 +66,18 @@ void unfo_objlist_destroy(UNFO_ObjList *objlist) {
         unfo_objlist_it_destroy(oldit);
 }
 
+void unfo_objlist_clear(UNFO_ObjList *objlist) {
+    unfo_objlist_destroy(objlist);
+    objlist->first = NULL;
+    objlist->last = NULL;
+    objlist->len = 0;
+}
+
 void unfo_objlist_destroy_u(UNFO_Object *objlist) {
     unfo_objlist_destroy((UNFO_ObjList*)objlist);
 }
 
-UNFO_Object* unfo_objlist_get(UNFO_ObjList *objlist,
-                              unsigned int atpos) {
+UNFO_Object* unfo_objlist_get(UNFO_ObjList *objlist, unsigned int atpos) {
     unsigned int pos;
     UNFO_ObjListIt *it;
     UNFO_Check_NULL(objlist, NULL)
@@ -84,6 +90,21 @@ UNFO_Object* unfo_objlist_get(UNFO_ObjList *objlist,
         return NULL;
 
     return (it)?unfo_object_copy(it->unfo_obj):NULL;
+}
+
+UNFO_Object* unfo_objlist_get_x(UNFO_ObjList *objlist, unsigned int atpos) {
+    unsigned int pos;
+    UNFO_ObjListIt *it;
+    UNFO_Check_NULL(objlist, NULL)
+
+    for (it = objlist->first, pos=0;
+         it != NULL && pos != atpos;
+         it = it->next, pos++);
+
+    if (pos != atpos)
+        return NULL;
+
+    return (it)?it->unfo_obj:NULL;
 }
 
 UNFO_ObjListIt* unfo_objlist_get_it(UNFO_ObjList *objlist,
@@ -231,7 +252,7 @@ int unfo_objlist_remove_at(UNFO_ObjList *objlist, unsigned int atpos) {
     UNFO_Check_NULL(objlist, 0)
 
     for (it = objlist->first, pos=-1;
-         it != NULL && pos != (int)atpos;
+         it != NULL && pos != (int)atpos-1;
          it = it->next, pos++) {
         itprev = it;
     }
@@ -252,6 +273,7 @@ int unfo_objlist_remove_at(UNFO_ObjList *objlist, unsigned int atpos) {
             objlist->last = itprev;
         }
     }
+    objlist->len--;
     return 1;
 }
 

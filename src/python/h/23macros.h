@@ -30,6 +30,14 @@
     #define PYINIT_FUNC init_libpyunfo
 #endif
 
+#define PYTYPEOBJECT_END\
+    0,\
+    0,\
+    0,\
+    0,\
+    0,\
+    0,\
+    0
 
 #endif
 

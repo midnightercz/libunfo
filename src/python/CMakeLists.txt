@@ -12,17 +12,19 @@ include_directories(${PYTHON_INCLUDE_PATH})
 include_directories(${LIBUNFO_INCLUDE_PATH})
 include_directories("${PROJECT_SOURCE_DIR}/src")
 
-set(test_files test.py)
+set(test_files test.py update-short.xml update-short1.xml.gz)
 foreach (file ${test_files})
     file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/tests/${file}" DESTINATION "./libunfo/")
 endforeach(file ${test_files})
 
 
-set(pyunfo_SRC pyunfo.c pyunfo_doc.c pyunfo_docupdate.c pyunfo_utils.c
-               pyunfo_objlist.c
+set(pyunfo_SRC pyunfo.c pyunfo_doc.c pyunfo_docupdate.c pyunfo_docref.c
+               pyunfo_doccoll.c pyunfo_docpkg.c
+               pyunfo_utils.c pyunfo_objlist.c
                pyunfo_objlist_iter.c)
-set(pyunfo_HDR pyunfo.h pyunfo_doc.h pyunfo_docupdate.c pyunfo_utils.h
-               pyunfo_objlist.h
+set(pyunfo_HDR pyunfo.h pyunfo_doc.h pyunfo_docupdate.c pyunfo_docref.h
+               pyunfo_doccoll.h pyunfo_docpkg.h
+               pyunfo_utils.h pyunfo_objlist.h
                pyunfo_objlist_iter.h)
 
 add_library(pyunfo SHARED ${pyunfo_SRC})

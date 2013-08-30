@@ -8,6 +8,8 @@
 #include "23macros.h"
 #include "pyunfo_utils.h"
 #include "pyunfo_objlist.h"
+#include "pyunfo_docref.h"
+#include "pyunfo_doccoll.h"
 
 #include "libunfo/unfo_docupdate.h"
 

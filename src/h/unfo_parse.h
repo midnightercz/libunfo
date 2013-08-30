@@ -19,12 +19,13 @@ void unfo_parse_data_destroy(UNFO_ParseData* parse_data);
 UNFO_ParseElem* unfo_parse_elem_create(const char *name, const char **attrs);
 void unfo_parse_elem_destroy(void *elem);
 
-signed char unfo_parse_file(char *filename,
-                            char *encoding, UNFO_ParseData *parsed);
+signed char unfo_parse_file(const char *filename,
+                            const char *encoding, UNFO_ParseData* parsed);
 #if ZLIB_SUPPORT == YES
-signed char unfo_parse_gzfile(char *filename,
-                            char *encoding, UNFO_ParseData *parsed);
+signed char unfo_parse_gzfile(const char *filename,
+                            const char *encoding, UNFO_ParseData* parsed);
 #endif
+signed char unfo_parse_str(const char *str, UNFO_ParseData* parsed);
 
 void unfo_parse_start_elem_handler(void *userData, const XML_Char *s,
                                    const XML_Char **attrs);

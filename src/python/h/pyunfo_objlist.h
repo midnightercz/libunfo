@@ -23,21 +23,19 @@ typedef struct PyUNFO_ObjList_Info {
 } PyUNFO_ObjList_Info;
 
 typedef struct PyUNFO_ObjList {
+    PyObject_HEAD
     UNFO_ObjList *list;
     PyUNFO_ObjList_Info *item_info;
 } PyUNFO_ObjList;
 
-typedef struct PyUNFO_GetSetObjClosure {
-    PyTypeObject *type;
-    PyUNFO_ObjList_Info* pyobjlist_info;
-    size_t pobj_offset;
-    size_t *path;
-} PyUNFO_GetSetObjClosure;
-
-int PyUNFO_setobjlist(PyObject *self, PyObject *objlist, void *closure);
-PyObject* PyUNFO_getobjlist(PyObject *self, void *closure);
-
 PyObject *pyobjlist_getitem(PyObject *self, Py_ssize_t index);
+
+PyObject* PyUNFO_ObjList_new(PyTypeObject *type,
+                             PyObject *args, PyObject *kwargs);
+void PyUNFO_ObjList_dealloc(PyUNFO_ObjList *self);
+
+int PyUNFO_ObjList_print(PyObject *self, FILE *f, int flags);
+PyObject* PyUNFO_ObjList_str(PyObject *self);
 
 extern PyTypeObject PyUNFO_ObjList_Type;
 

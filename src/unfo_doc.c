@@ -27,11 +27,18 @@ void unfo_doc_destroy(UNFO_Doc *doc) {
 }
 UNFO_DESTROY_u(doc, UNFO_Doc)
 
+signed char unfo_doc_cmp(UNFO_Doc *doc1, UNFO_Doc *doc2) {
+   return unfo_object_cmp((UNFO_Object*)doc1->updates,
+                          (UNFO_Object*)doc2->updates);
+}
+UNFO_CMP_u(doc, UNFO_Doc)
+
 UNFO_ObjectInfo UNFO_Doc_ObjInfo = {
     .obj_size = sizeof(UNFO_Doc),
     .constructor = &unfo_doc_create_u,
     .destructor = &unfo_doc_destroy_u,
-    .deep_copy = &unfo_doc_copy_u
+    .deep_copy = &unfo_doc_copy_u,
+    .obj_cmp = &unfo_doc_cmp_u
 };
 
 void unfo_doc_xml_f(UNFO_Doc* doc,  char *filename, char *enc, UNFO_Log *log) {

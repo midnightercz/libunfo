@@ -59,6 +59,15 @@ int CONCAT(CONCAT(PyUNFO_, OBJNAME), _init)(PTYPE *self,\
     }\
 }
 
+#define PyUNFO_STR(OBJNAME, PTYPE, UOBJ)\
+    PyObject* CONCAT(CONCAT(PyUNFO_, OBJNAME), _str)(PyObject *self) {\
+    PyObject *ret;\
+    char *str = unfo_object_tostr((UNFO_Object*)((PTYPE*)self)->UOBJ);\
+    ret = PyUnicode_FromString(str);\
+    free (str);\
+    return ret;\
+}
+
 #define PYUNFO_STR_GETSET_CLOSURE(PNAME, CNAME, OFFSET, ATTR)\
 PyUNFO_StrGetSet_Closure CONCAT(CONCAT(CONCAT(CONCAT(PyUNFO_, PNAME),_), ATTR), _closure) = {\
     .c_offset = OFFSET,\
@@ -78,10 +87,14 @@ typedef struct PyUNFO_ObjListGetSet_Closure {
     size_t c_offset;
     size_t l_offset;
     const char *name;
+    PyTypeObject *list_type;
 } PyUNFO_ObjListGetSet_Closure;
 
-const char * Py2Str(PyObject *obj);
+char * Py2Str(PyObject *obj);
 PyObject* pyunfo_strattr_getter(PyObject *self, void *closure);
 int pyunfo_strattr_setter(PyObject *self, PyObject *other, void *closure);
+
+PyObject* pyunfo_objlist_getter(PyObject *self, void *closure);
+int pyunfo_objlist_setter(PyObject *self, PyObject *other, void *closure);
 
 #endif

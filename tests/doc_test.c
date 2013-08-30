@@ -11,8 +11,10 @@
 #include <check.h>
 
 START_TEST(test_doc) {
-
-} END_TEST
+    UNFO_Doc *doc;
+    doc = (UNFO_Doc*)unfo_object_create(&UNFO_Doc_ObjInfo, NULL);
+    unfo_object_destroy((UNFO_Object*)doc);
+}END_TEST
 
 START_TEST(test_doc_update) {
     UNFO_DocUpdate *docupdate;
@@ -55,6 +57,9 @@ START_TEST(test_doc_update) {
         tmp = getters[i](docupdate);
         ck_assert(strcmp(tmp, "test val") == 0);
     }
+    char *str = unfo_object_tostr((UNFO_Object*)docupdate);
+    free(str);
+
     unfo_object_destroy((UNFO_Object*)docupdate);
 } END_TEST
 

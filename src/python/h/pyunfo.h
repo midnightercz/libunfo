@@ -11,6 +11,7 @@
 #include "pyunfo_doc.h"
 #include "pyunfo_docupdate.h"
 #include "pyunfo_objlist.h"
+#include "pyunfo_docref.h"
 
 #endif
 

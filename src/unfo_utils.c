@@ -22,3 +22,44 @@ int __unfo_strcmp(const char *str1, const char *str2) {
     else
         return strcmp(str1, str2) == 0;
 }
+
+char *attrs2str(UNFO_RTree *attrs, const char *kwds[], int kwds_len) {
+    int total_len = 0;
+    int len, i;
+    char *tmp, *ret;
+    char *vals[kwds_len];
+
+    const int streqlen = strlen("='', ");
+    if (!attrs)
+        return "";
+    for (i=0; i < kwds_len-1; i++) {
+        len = streqlen;
+        len += strlen(kwds[i]);
+        len += (tmp=unfo_rtree_get(attrs, kwds[i]))?strlen(tmp):0;
+        total_len += len;
+
+        vals[i] = malloc(sizeof(char) * (len+1));
+        if (tmp)
+            sprintf(vals[i], "%s='%s', ", kwds[i], tmp);
+        else
+            sprintf(vals[i], "%s='', ", kwds[i]);
+    }
+    len = streqlen;
+    len += strlen(kwds[i]);
+    len += (tmp=unfo_rtree_get(attrs, kwds[i]))?strlen(tmp):0;
+    total_len += len;
+
+    vals[i] = malloc(sizeof(char) * (len+1));
+    if (tmp)
+        sprintf(vals[i], "%s='%s'", kwds[i], tmp);
+    else
+        sprintf(vals[i], "%s=''", kwds[i]);
+
+    ret = malloc((total_len + 1) * sizeof(char));
+    ret[0]=0;
+    for (int i=0; i < kwds_len; i++) {
+        ret = strcat(ret, vals[i]);
+        free(vals[i]);
+    }
+    return ret;
+}

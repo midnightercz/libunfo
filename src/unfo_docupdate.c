@@ -46,6 +46,46 @@ void unfo_doc_update_destroy(UNFO_DocUpdate *docupdate) {
 }
 UNFO_DESTROY_u(doc_update, UNFO_DocUpdate)
 
+signed char unfo_doc_update_cmp(UNFO_DocUpdate* update1, UNFO_DocUpdate *update2){
+    static const char *attrs[] = {"from", "status", "type", "version", "id",
+                                  "title", "rights", "summary", "description",
+                                  "solution"};
+    static int attrs_len = 10;
+    int i;
+    char *tmp1, *tmp2;
+
+    for (i = 0; i < attrs_len; i++) {
+        tmp1 = unfo_rtree_get(update1->attrs, attrs[i]);
+        tmp2 = unfo_rtree_get(update2->attrs, attrs[i]);
+        if (!__unfo_strcmp(tmp1, tmp2))
+            return 0;
+    }
+    if (!unfo_object_cmp((UNFO_Object*)update1->refs,
+                         (UNFO_Object*)update2->refs))
+        return 0;
+    return unfo_object_cmp((UNFO_Object*)update1->colls,
+                           (UNFO_Object*)update2->colls);
+}
+UNFO_CMP_u(doc_update, UNFO_DocUpdate)
+
+char* unfo_doc_update_str(UNFO_DocUpdate *obj) {
+    char *ret, *tmp;
+    int len;
+    const int wrap = strlen("<UNFO_DocUpdate >");
+    static const char *attrs[] = {"from", "status", "type", "version", "id",
+                                  "title", "rights", "summary", "description",
+                                  "solution"};
+    tmp = attrs2str(obj->attrs, attrs, 10);
+    len = strlen(tmp);
+    ret = malloc(sizeof(char) * (len + wrap + 1));
+    sprintf(ret, "<UNFO_DocUpdate %s>", tmp);
+    free(tmp);
+    return ret;
+}
+
+char* unfo_doc_update_str_u(UNFO_Object *obj) {
+    return unfo_doc_update_str((UNFO_DocUpdate*)obj);
+}
 
 char* unfo_doc_update_updated_get(UNFO_DocUpdate *docupdate) {
     struct tm *timeinfo;
@@ -60,14 +100,11 @@ char* unfo_doc_update_updated_get(UNFO_DocUpdate *docupdate) {
 }
 
 int unfo_doc_update_updated_set(UNFO_DocUpdate *docupdate, const char *date) {
-    struct tm timeinfo, *timeinfo2;
-    printf("DATE %s\n", date);
+    struct tm timeinfo;
     if (strptime(date, "%Y-%d-%m %H:%M:%S", &timeinfo) == NULL) {
-        printf("failed to parse\n");
         return 0;
     }
-    timeinfo2 = __unfo_date_clone(&timeinfo);
-    unfo_rtree_set(docupdate->date_attrs, "updated", timeinfo2);
+    unfo_rtree_set(docupdate->date_attrs, "updated", &timeinfo);
     return 1;
 }
 
@@ -79,20 +116,16 @@ char* unfo_doc_update_issued_get(UNFO_DocUpdate *docupdate) {
 
     timeinfo = (struct tm*)unfo_rtree_get(docupdate->date_attrs, "updated");
     if (!timeinfo) return "";
-    printf("%d %d %d\n", timeinfo->tm_sec, timeinfo->tm_min, timeinfo->tm_hour);
     strftime(ret, 20, "%F %T", timeinfo);
     return ret;
 }
 
 int unfo_doc_update_issued_set(UNFO_DocUpdate *docupdate, const char *date) {
-    struct tm timeinfo, *timeinfo2;
-    printf("DATE %s\n", date);
+    struct tm timeinfo;
     if (strptime(date, "%Y-%d-%m %H:%M:%S", &timeinfo) == NULL) {
-        printf("failed to parse\n");
         return 0;
     }
-    timeinfo2 = __unfo_date_clone(&timeinfo);
-    unfo_rtree_set(docupdate->date_attrs, "updated", timeinfo2);
+    unfo_rtree_set(docupdate->date_attrs, "updated", &timeinfo);
     return 1;
 }
 
@@ -114,62 +147,79 @@ UNFO_ObjectInfo UNFO_DocUpdate_ObjInfo = {
     .obj_size = sizeof(UNFO_DocUpdate),
     .constructor = &unfo_doc_update_create_u,
     .destructor = &unfo_doc_update_destroy_u,
-    .deep_copy = &unfo_doc_update_copy_u
+    .deep_copy = &unfo_doc_update_copy_u,
+    .to_str = &unfo_doc_update_str_u,
+    .obj_cmp = &unfo_doc_update_cmp_u
 };
 
 void unfo_doc_update_xml(UNFO_Object *obj, xmlTextWriterPtr writer) {
     char *val;
     UNFO_ObjListIt *it;
     xmlTextWriterStartElement(writer, BAD_CAST "update");
+
     val = unfo_doc_update_from_get((UNFO_DocUpdate*)obj);
     xmlTextWriterWriteAttribute(writer, BAD_CAST "from", BAD_CAST val);
+
     val = unfo_doc_update_status_get((UNFO_DocUpdate*)obj);
     xmlTextWriterWriteAttribute(writer, BAD_CAST "status", BAD_CAST val);
+
     val = unfo_doc_update_type_get((UNFO_DocUpdate*)obj);
     xmlTextWriterWriteAttribute(writer, BAD_CAST "type", BAD_CAST val);
+
     val = unfo_doc_update_version_get((UNFO_DocUpdate*)obj);
     xmlTextWriterWriteAttribute(writer, BAD_CAST "version", BAD_CAST val);
+
     val = unfo_doc_update_id_get((UNFO_DocUpdate*)obj);
     xmlTextWriterStartElement(writer, BAD_CAST "id");
     xmlTextWriterWriteString(writer, BAD_CAST val);
     xmlTextWriterEndElement(writer);
+
     val = unfo_doc_update_title_get((UNFO_DocUpdate*)obj);
     xmlTextWriterStartElement(writer, BAD_CAST "title");
     xmlTextWriterWriteString(writer, BAD_CAST val);
     xmlTextWriterEndElement(writer);
+
     val = unfo_doc_update_issued_get((UNFO_DocUpdate*)obj);
     xmlTextWriterStartElement(writer, BAD_CAST "issued");
     xmlTextWriterWriteAttribute(writer, BAD_CAST "date", BAD_CAST val);
     xmlTextWriterEndElement(writer);
     free(val);
+
     val = unfo_doc_update_updated_get((UNFO_DocUpdate*)obj);
     xmlTextWriterStartElement(writer, BAD_CAST "updated");
     xmlTextWriterWriteAttribute(writer, BAD_CAST "date", BAD_CAST val);
     xmlTextWriterEndElement(writer);
     free(val);
+
     val = unfo_doc_update_rights_get((UNFO_DocUpdate*)obj);
     xmlTextWriterStartElement(writer, BAD_CAST "rights");
     xmlTextWriterWriteString(writer, BAD_CAST val);
     xmlTextWriterEndElement(writer);
+
     val = unfo_doc_update_summary_get((UNFO_DocUpdate*)obj);
     xmlTextWriterStartElement(writer, BAD_CAST "summary");
     xmlTextWriterWriteString(writer, BAD_CAST val);
     xmlTextWriterEndElement(writer);
+
     val = unfo_doc_update_description_get((UNFO_DocUpdate*)obj);
     xmlTextWriterStartElement(writer, BAD_CAST "description");
     xmlTextWriterWriteString(writer, BAD_CAST val);
     xmlTextWriterEndElement(writer);
+
     val = unfo_doc_update_solution_get((UNFO_DocUpdate*)obj);
     xmlTextWriterStartElement(writer, BAD_CAST "solution");
     xmlTextWriterWriteString(writer, BAD_CAST val);
     xmlTextWriterEndElement(writer);
+
     xmlTextWriterStartElement(writer, BAD_CAST "references");
     for (it = ((UNFO_DocUpdate*)obj)->refs->first; it != NULL; it = it->next)
         unfo_doc_ref_xml(it->unfo_obj, writer);
     xmlTextWriterEndElement(writer);
+
     xmlTextWriterStartElement(writer, BAD_CAST "pkglist");
     for (it = ((UNFO_DocUpdate*)obj)->colls->first; it != NULL; it = it->next)
         unfo_doc_coll_xml(it->unfo_obj, writer);
     xmlTextWriterEndElement(writer);
+
     xmlTextWriterEndElement(writer);
 }

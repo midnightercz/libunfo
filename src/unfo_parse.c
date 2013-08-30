@@ -36,8 +36,8 @@ void unfo_parse_data_destroy(UNFO_ParseData* parse_data) {
 }
 
 #if ZLIB_SUPPORT == YES
-signed char unfo_parse_gzfile(char *filename,
-                            char *encoding, UNFO_ParseData* parsed) {
+signed char unfo_parse_gzfile(const char *filename,
+                            const char *encoding, UNFO_ParseData* parsed) {
     void *buffer;
     int readed;
     signed char result = 1;
@@ -71,15 +71,19 @@ signed char unfo_parse_gzfile(char *filename,
 }
 #endif
 
-signed char unfo_parse_file(char *filename,
-                            char *encoding, UNFO_ParseData* parsed) {
+signed char unfo_parse_file(const char *filename,
+                            const char *encoding, UNFO_ParseData* parsed) {
     void *buffer;
     int readed;
     signed char result = 1;
     FILE *f = fopen(filename, "r");
-
+    if (!f) {
+        unfo_log_error_x(parsed->log, UNFO_LOG_PARSE_FOPEN, 1, unfo_str(filename));
+        return -1;
+    }
     if (ferror(f)) {
         unfo_log_error_x(parsed->log, UNFO_LOG_PARSE_FERROR, 1, unfo_num(errno));
+        return -1;
     }
 
     for (;;) {
@@ -108,7 +112,7 @@ signed char unfo_parse_file(char *filename,
     return result;
 }
 
-signed char unfo_parse_str(char *str, UNFO_ParseData* parsed) {
+signed char unfo_parse_str(const char *str, UNFO_ParseData* parsed) {
     if (!XML_Parse(parsed->parser, str, strlen(str), 1)) {
         unfo_log_error_x(parsed->log, UNFO_LOG_PARSE_PARSER, 3,
              unfo_str(XML_ErrorString(XML_GetErrorCode(parsed->parser))),
@@ -160,7 +164,6 @@ void unfo_parse_check_attributes(UNFO_ParseData *parse_data,
     attrindex = 0;
     while (process) {
         process = 0;
-        printf("attr %s\n", attrs[attrindex]);
         for (i=0, current = attributes[0]; current != NULL;
              i++, current = attributes[i]) {
             if (!processed[i]) {
@@ -229,7 +232,6 @@ void unfo_parse_start_elem_handler(void *userData, const XML_Char *s,
     elem = unfo_parse_elem_create(s, attrs);
 
     if (LAST)
-        printf("start elem %s\n", s);
     //UNFO_ElemInfos[elem->type];
     if (ELEMINFO->ancestor != UNFO_ELEM_NONE) {
         UNFO_Str *str1, *str2 = NULL, *str3;

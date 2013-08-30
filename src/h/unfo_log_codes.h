@@ -14,6 +14,7 @@
 #define UNFO_LOG_ATTR_MISSING       4
 #define UNFO_LOG_ATTR_VALERROR      5
 #define UNFO_LOG_PARSE_FERROR       6
+#define UNFO_LOG_PARSE_FOPEN        12
 #define UNFO_LOG_PARSE_ALLOC        7
 #define UNFO_LOG_PARSE_PARSER       8
 #define UNFO_LOG_PARSE_FREAD        9

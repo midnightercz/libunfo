@@ -37,7 +37,7 @@ inline int pyobjlist_setitem(PyObject *self, Py_ssize_t index, PyObject *item){
                 continue;
 
             uobj = item_info->accept_func(item);
-            uobj2 = unfo_objlist_get(list, index);
+            uobj2 = unfo_objlist_get_x(list, index);
             if (uobj2) unfo_object_destroy(uobj2);
             unfo_objlist_insert_at(list, index, uobj);
             break;
@@ -208,11 +208,11 @@ PyObject* PyUNFO_ObjList_append(PyObject * self, PyObject *item) {
     int type_index;
     UNFO_Object *uobj;
 
-    for (type_index = 0; item_info->accept_types[type_index]; type_index++) {
+    for (type_index = 0; item_info->accept_types[type_index] != NULL; type_index++) {
         if (Py_TYPE(item) != item_info->accept_types[type_index])
             continue;
         uobj = item_info->accept_func(item);
-        unfo_objlist_append_x(list, uobj);
+        unfo_objlist_append(list, uobj);
         break;
     }
     if (!item_info->accept_types[type_index]) {
@@ -230,7 +230,7 @@ PyObject* PyUNFO_ObjList_str(PyObject *self) {
     UNFO_ObjListIt *it;
     ret = PyUnicode_FromString("[");
     for (it = ((PyUNFO_ObjList*)self)->list->first; it != NULL; it = it->next) {
-        tmp2 = PyUnicode_FromString(unfo_object_tostr(it->unfo_obj));
+       tmp2 = PyUnicode_FromString(unfo_object_tostr(it->unfo_obj));
         tmp = PyUnicode_Concat(ret, tmp2);
         Py_DECREF(ret);
         Py_DECREF(tmp2);
@@ -245,16 +245,20 @@ PyObject* PyUNFO_ObjList_str(PyObject *self) {
 }
 int PyUNFO_ObjList_print(PyObject *self, FILE *f, int flags) {
     UNFO_ObjListIt *it;
+    char *tmp;
 
     (void)flags;
     fprintf(f, "[");
     it = ((PyUNFO_ObjList*)self)->list?((PyUNFO_ObjList*)self)->list->first:NULL;
     for (;it != NULL && it != ((PyUNFO_ObjList*)self)->list->last; it = it->next){
-        fprintf(f, "%s", unfo_object_tostr(it->unfo_obj));
-        fprintf(f, ", ");
+        tmp = unfo_object_tostr(it->unfo_obj);
+        fprintf(f, "%s, ", tmp);
+        free(tmp);
     }
     if (it) {
-        fprintf(f, "%s", unfo_object_tostr(it->unfo_obj));
+        tmp = unfo_object_tostr(it->unfo_obj);
+        fprintf(f, "%s", tmp);
+        free(tmp);
     }
     fprintf(f, "]");
     return 0;
@@ -289,38 +293,8 @@ Py_ssize_t PyUNFO_ObjList_len(PyObject *self) {
 }
 
 PyObject* PyUNFO_ObjList_clear(PyObject *self) {
-    //unfo_objlist_clear(((PyUNFO_ObjList*)self)->list);
+    unfo_objlist_clear(((PyUNFO_ObjList*)self)->list);
     Py_RETURN_NONE;
-}
-
-int PyUNFO_setobjlist(PyObject *self, PyObject *objlist, void *closure) {
-
-}
-
-PyObject* PyUNFO_getobjlist(PyObject *self, void *closure) {
-    size_t offset = 0;
-    void *tmpobj;
-    PyObject *pobj;
-    pobj = (PyObject*) *((char**)((char*)tmpobj)+offset);
-    if (pobj) {
-        Py_INCREF(pobj);
-        return pobj;
-    } else {
-        pobj = PyUNFO_ObjList_new(&PyUNFO_ObjList_Type, NULL, NULL);
-        unfo_object_destroy((UNFO_Object*)((PyUNFO_ObjList*)pobj)->list);
-        tmpobj = (void*)self;
-        offset = ((PyUNFO_GetSetObjClosure*)closure)->path[0];
-        while (offset != (size_t)-1) {
-            tmpobj =(void*) *((char**)((char*)tmpobj)+offset);
-            offset++;
-        }
-        ((PyUNFO_ObjList*)pobj)->list = (UNFO_ObjList*)
-                                        unfo_object_copy((UNFO_Object*)tmpobj);
-        tmpobj = (void*)self;
-        offset = ((PyUNFO_GetSetObjClosure*)closure)->pobj_offset;
-        *((PyObject**)((char*)tmpobj)+offset) = pobj;
-        return pobj;
-    }
 }
 
 static PyMappingMethods PyUNFO_ObjList_mapping = {
@@ -346,7 +320,7 @@ PyTypeObject PyUNFO_ObjList_Type = {
     sizeof(PyUNFO_ObjList), /*tp_basicsize*/
     0,                         /*tp_itemsize*/
     (destructor)PyUNFO_ObjList_dealloc, /*tp_dealloc*/
-    0,                         /*tp_print*/
+    &PyUNFO_ObjList_print,      /*tp_print*/
     0,                         /*tp_getattr*/
     0,                         /*tp_setattr*/
     0,                         /*tp_compare*/
@@ -356,7 +330,7 @@ PyTypeObject PyUNFO_ObjList_Type = {
     &PyUNFO_ObjList_mapping,   /*tp_as_mapping*/
     0,                         /*tp_hash */
     0,                         /*tp_call*/
-    0,                         /*tp_str*/
+    &PyUNFO_ObjList_str,        /*tp_str*/
     0,                         /*tp_getattro*/
     0,                         /*tp_setattro*/
     0,                         /*tp_as_buffer*/
@@ -366,7 +340,7 @@ PyTypeObject PyUNFO_ObjList_Type = {
     0,                         /* tp_clear */
     &PyUNFO_ObjList_cmp,       /* tp_richcompare */
     0,                         /* tp_weaklistoffset */
-    0,                         /* tp_iter */
+    PyUNFO_ObjList_getiter,    /* tp_iter */
     0,                         /* tp_iternext */
     PyUNFO_ObjList_methods,    /* tp_methods */
     PyUNFO_ObjList_members,    /* tp_members */
