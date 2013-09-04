@@ -30,5 +30,12 @@ if (${ZLIB_SUPPORT} STREQUAL YES)
     target_link_libraries(unfo ${ZLIB_LIBRARIES})
 endif()
 
+IF (CMAKE_SIZEOF_VOID_P MATCHES "8")
+    SET (LIB_SUFFIX "64")
+ENDIF (CMAKE_SIZEOF_VOID_P MATCHES "8")
+set (LIB_INST_DIR ${CMAKE_INSTALL_PREFIX}/lib${LIB_SUFFIX})
+
+install(FILES ${libunfo_HEADERS} DESTINATION include/libunfo)
+install(TARGETS unfo LIBRARY DESTINATION ${LIB_INST_DIR})
 
 add_subdirectory(python)
