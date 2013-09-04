@@ -50,7 +50,7 @@ signed char unfo_doc_coll_cmp(UNFO_DocColl* coll1, UNFO_DocColl *coll2){
         tmp1 = unfo_rtree_get(coll1->attrs, attrs[i]);
         tmp2 = unfo_rtree_get(coll2->attrs, attrs[i]);
         if (!__unfo_strcmp(tmp1, tmp2)) {
-            printf("coll differ\n");
+            printf("coll attrs differ %s %s\n", tmp1, tmp2);
             return 0;
         }
     }
@@ -77,7 +77,8 @@ void unfo_doc_coll_xml(UNFO_Object *obj, xmlTextWriterPtr writer) {
 
     xmlTextWriterStartElement(writer, BAD_CAST "collection");
     val = unfo_doc_coll_short_get((UNFO_DocColl*)obj);
-    xmlTextWriterWriteAttribute(writer, BAD_CAST "short", BAD_CAST val);
+    if (val)
+        xmlTextWriterWriteAttribute(writer, BAD_CAST "short", BAD_CAST val);
     xmlTextWriterStartElement(writer, BAD_CAST "name");
     val = unfo_doc_coll_name_get((UNFO_DocColl*)obj);
     xmlTextWriterWriteString(writer, BAD_CAST val);

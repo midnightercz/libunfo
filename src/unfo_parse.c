@@ -229,13 +229,23 @@ void unfo_parse_start_elem_handler(void *userData, const XML_Char *s,
     #define parser_col XML_GetCurrentColumnNumber(PARSEDATA->parser)
 
     UNFO_ParseElem *elem;
-    elem = unfo_parse_elem_create(s, attrs);
+    UNFO_Str *str1, *str2 = NULL, *str3;
+    UNFO_Num *num1, *num2;
 
-    if (LAST)
-    //UNFO_ElemInfos[elem->type];
+    elem = unfo_parse_elem_create(s, attrs);
+    elem->valid = 1;
+    if (elem->type = UNFO_ELEM_UNKNOWN) {
+        num1 = unfo_num(parser_line);
+        num2 = unfo_num(parser_col);
+        str1 = unfo_str((const char*)s);
+        unfo_log_warning(PARSEDATA->log, UNFO_LOG_ELEM_UNKNOWN, 3,
+                         str1,  num1, num2);
+        unfo_object_destroy((UNFO_Object*)str1);
+        unfo_object_destroy((UNFO_Object*)num1);
+        unfo_object_destroy((UNFO_Object*)num2);
+    }
+
     if (ELEMINFO->ancestor != UNFO_ELEM_NONE) {
-        UNFO_Str *str1, *str2 = NULL, *str3;
-        UNFO_Num *num1, *num2;
         str1 = unfo_str((const char*)s);
         str3 = unfo_str((const char*)UNFO_ElemInfos[ELEMINFO->ancestor]->name);
         num1 = unfo_num(parser_line);
@@ -244,10 +254,12 @@ void unfo_parse_start_elem_handler(void *userData, const XML_Char *s,
             str2 = unfo_str(UNFO_ElemInfos[LASTELEM->type]->name);
             unfo_log_warning(PARSEDATA->log, UNFO_LOG_WRONG_PARENT, 5,
                              str1, str2, str3, num1, num2);
+            elem->valid = 0;
         } else if (!LAST) {
             str2 = unfo_str("-No element-");
             unfo_log_warning(PARSEDATA->log, UNFO_LOG_WRONG_PARENT, 5,
                              str1, str2, str3, num1, num2);
+            elem->valid = 0;
         }
         unfo_object_destroy((UNFO_Object*)str1);
         unfo_object_destroy((UNFO_Object*)str2);
@@ -260,7 +272,7 @@ void unfo_parse_start_elem_handler(void *userData, const XML_Char *s,
     }
 
     unfo_hslist_append(PARSEDATA->elem_stack, elem, 0);
-    if (ELEMINFO->preproc) {
+    if (ELEMINFO->preproc && elem->valid) {
         ELEMINFO->preproc(PARSEDATA, elem);
     } else {
  
@@ -296,7 +308,7 @@ void unfo_parse_end_elem_handler(void *userData, const XML_Char *s) {
     it = LAST;
     unfo_hslist_remove(((UNFO_ParseData*)userData)->elem_stack, it);
 
-    if (UNFO_ElemInfos[type]->postproc) {
+    if (UNFO_ElemInfos[type]->postproc && elem->valid) {
         UNFO_ElemInfos[type]->postproc((UNFO_ParseData*)userData, elem);
     }
     unfo_parse_elem_destroy(it->data);

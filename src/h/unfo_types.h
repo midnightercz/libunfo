@@ -62,6 +62,7 @@ struct UNFO_ParseElem {
     const char **attrs;
     unsigned int attrs_len;
     UNFO_ParseElemType type;
+    char valid;
 };
 
 struct UNFO_ParseData {

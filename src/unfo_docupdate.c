@@ -57,8 +57,10 @@ signed char unfo_doc_update_cmp(UNFO_DocUpdate* update1, UNFO_DocUpdate *update2
     for (i = 0; i < attrs_len; i++) {
         tmp1 = unfo_rtree_get(update1->attrs, attrs[i]);
         tmp2 = unfo_rtree_get(update2->attrs, attrs[i]);
-        if (!__unfo_strcmp(tmp1, tmp2))
+        if (!__unfo_strcmp(tmp1, tmp2)) {
+            printf("update attrs differ %s %s\n", tmp1, tmp2);
             return 0;
+        }
     }
     if (!unfo_object_cmp((UNFO_Object*)update1->refs,
                          (UNFO_Object*)update2->refs))
@@ -94,7 +96,10 @@ char* unfo_doc_update_updated_get(UNFO_DocUpdate *docupdate) {
     UNFO_Check_Malloc(ret, NULL)
 
     timeinfo = (struct tm*)unfo_rtree_get(docupdate->date_attrs, "updated");
-    if (!timeinfo) return "";
+    if (!timeinfo) {
+        ret[0] = 0;
+        return ret;
+    }
     strftime(ret, 20, "%F %T", timeinfo);
     return ret;
 }
@@ -115,7 +120,10 @@ char* unfo_doc_update_issued_get(UNFO_DocUpdate *docupdate) {
     UNFO_Check_Malloc(ret, NULL)
 
     timeinfo = (struct tm*)unfo_rtree_get(docupdate->date_attrs, "updated");
-    if (!timeinfo) return "";
+    if (!timeinfo) {
+        ret[0] = 0;
+        return ret;
+    }
     strftime(ret, 20, "%F %T", timeinfo);
     return ret;
 }
@@ -158,16 +166,20 @@ void unfo_doc_update_xml(UNFO_Object *obj, xmlTextWriterPtr writer) {
     xmlTextWriterStartElement(writer, BAD_CAST "update");
 
     val = unfo_doc_update_from_get((UNFO_DocUpdate*)obj);
-    xmlTextWriterWriteAttribute(writer, BAD_CAST "from", BAD_CAST val);
+    if (val)
+        xmlTextWriterWriteAttribute(writer, BAD_CAST "from", BAD_CAST val);
 
     val = unfo_doc_update_status_get((UNFO_DocUpdate*)obj);
-    xmlTextWriterWriteAttribute(writer, BAD_CAST "status", BAD_CAST val);
+    if (val)
+        xmlTextWriterWriteAttribute(writer, BAD_CAST "status", BAD_CAST val);
 
     val = unfo_doc_update_type_get((UNFO_DocUpdate*)obj);
-    xmlTextWriterWriteAttribute(writer, BAD_CAST "type", BAD_CAST val);
+    if (val)
+        xmlTextWriterWriteAttribute(writer, BAD_CAST "type", BAD_CAST val);
 
     val = unfo_doc_update_version_get((UNFO_DocUpdate*)obj);
-    xmlTextWriterWriteAttribute(writer, BAD_CAST "version", BAD_CAST val);
+    if (val)
+        xmlTextWriterWriteAttribute(writer, BAD_CAST "version", BAD_CAST val);
 
     val = unfo_doc_update_id_get((UNFO_DocUpdate*)obj);
     xmlTextWriterStartElement(writer, BAD_CAST "id");
@@ -183,12 +195,14 @@ void unfo_doc_update_xml(UNFO_Object *obj, xmlTextWriterPtr writer) {
     xmlTextWriterStartElement(writer, BAD_CAST "issued");
     xmlTextWriterWriteAttribute(writer, BAD_CAST "date", BAD_CAST val);
     xmlTextWriterEndElement(writer);
+    //printf("issued: %s\n", val);
     free(val);
 
     val = unfo_doc_update_updated_get((UNFO_DocUpdate*)obj);
     xmlTextWriterStartElement(writer, BAD_CAST "updated");
     xmlTextWriterWriteAttribute(writer, BAD_CAST "date", BAD_CAST val);
     xmlTextWriterEndElement(writer);
+    //printf("updated: %s\n", val);
     free(val);
 
     val = unfo_doc_update_rights_get((UNFO_DocUpdate*)obj);

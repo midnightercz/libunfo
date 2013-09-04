@@ -14,12 +14,13 @@
 #define UNFO_LOG_ATTR_MISSING       4
 #define UNFO_LOG_ATTR_VALERROR      5
 #define UNFO_LOG_PARSE_FERROR       6
-#define UNFO_LOG_PARSE_FOPEN        12
 #define UNFO_LOG_PARSE_ALLOC        7
 #define UNFO_LOG_PARSE_PARSER       8
 #define UNFO_LOG_PARSE_FREAD        9
 #define UNFO_LOG_XMLGEN             10
 #define UNFO_LOG_WRITEF             11
+#define UNFO_LOG_PARSE_FOPEN        12
+#define UNFO_LOG_ELEM_UNKNOWN        13
 
 #define LOG_TEST_CODE1              1001
 #define LOG_TEST_CODE2              1002

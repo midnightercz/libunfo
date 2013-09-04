@@ -45,8 +45,10 @@ signed char unfo_doc_ref_cmp(UNFO_DocRef* ref1, UNFO_DocRef *ref2){
     for (i = 0; i < attrs_len; i++) {
         tmp1 = unfo_rtree_get(ref1->attrs, attrs[i]);
         tmp2 = unfo_rtree_get(ref2->attrs, attrs[i]);
-        if (!__unfo_strcmp(tmp1, tmp2))
+        if (!__unfo_strcmp(tmp1, tmp2)) {
+            printf("ref attrs differ %s=%s %s=%s\n", attrs[i], tmp1, attrs[i], tmp2);
             return 0;
+        }
     }
     return 1;
 }
@@ -69,14 +71,16 @@ UNFO_ObjectInfo UNFO_DocRef_ObjInfo = {
 void unfo_doc_ref_xml(UNFO_Object *obj, xmlTextWriterPtr writer) {
     const char *val;
     //UNFO_ObjListIt *it;
-
     xmlTextWriterStartElement(writer, BAD_CAST "reference");
     val = unfo_doc_ref_url_get((UNFO_DocRef*)obj);
-    xmlTextWriterWriteAttribute(writer, BAD_CAST "href", BAD_CAST val);
+    if (val)
+        xmlTextWriterWriteAttribute(writer, BAD_CAST "href", BAD_CAST val);
     val = unfo_doc_ref_type_get((UNFO_DocRef*)obj);
-    xmlTextWriterWriteAttribute(writer, BAD_CAST "type", BAD_CAST val);
+    if (val)
+        xmlTextWriterWriteAttribute(writer, BAD_CAST "type", BAD_CAST val);
     val = unfo_doc_ref_title_get((UNFO_DocRef*)obj);
-    xmlTextWriterWriteAttribute(writer, BAD_CAST "title", BAD_CAST val);
+    if (val)
+        xmlTextWriterWriteAttribute(writer, BAD_CAST "title", BAD_CAST val);
     val = unfo_doc_ref_id_get((UNFO_DocRef*)obj);
     if (val)
         xmlTextWriterWriteAttribute(writer, BAD_CAST "id", BAD_CAST val);

@@ -20,7 +20,9 @@ const char * UNFO_LogCodeFormat[] = {
                 [UNFO_LOG_PARSE_PARSER] = "Couldn't parse. Parser problem:%s"
                                           "at line:%s column:%s",
                 [UNFO_LOG_XMLGEN] = "Cannot generate xml",
-                [UNFO_LOG_WRITEF] = "Can't write to file %s"
+                [UNFO_LOG_WRITEF] = "Can't write to file %s",
+                [UNFO_LOG_ELEM_UNKNOWN] = "Unknown element <%s> at line:%s "
+                                          "column:%s",
                     };
 
 void unfo_log_create(UNFO_Log *log, UNFO_Object **args){

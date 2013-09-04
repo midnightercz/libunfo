@@ -387,6 +387,9 @@ void unfo_elem_textval_postproc(UNFO_ParseData *data, UNFO_ParseElem *elem) {
          it != NULL; it = it->next) {
         strcat(textval, (char*)it->data);
     }
+    if (data->unfo_doc->updates->last) {
+        return;
+    }
 
     switch (elem->type) {
         case UNFO_ELEM_ID:

@@ -1,0 +1,10 @@
+prefix=/usr/local
+includedir=${prefix}/include
+libdir=${prefix}/lib@LIB_SUFFIX@
+
+Name: libunfo
+Description: library for processing updateinfo.xml files
+Version: @VERSION@
+Requires: -L${libdir} -lunfo
+Reuires.private: -lxml2 -lexpat -lzlib
+CFlags: -I${includedir}

@@ -1,0 +1,121 @@
+%global commit @GITREVLONG@
+
+Name:           libunfo
+Version:        @VERSION@
+Release:        @libunfo_RELEASE@%{?dist}
+Summary:        updateinfo XML file manipulation library
+
+Group:          Development/Libraries
+License:        GPLv2+
+URL:            https://github.com/midnightercz/libunfo/
+Source0:        https://github.com/midnightercz/libunfo/@SOURCE_URL_PATH@
+BuildRequires:  libxml2-devel
+BuildRequires:  check-devel
+BuildRequires:  expat-devel
+BuildRequires:  zlib-devel
+%if 0%{?rhel} == 6
+BuildRequires:  cmake28
+%else
+BuildRequires:  cmake
+%endif
+
+%description
+Libunfo is library for structure-like manipulation with content of
+updateinfo xml files. Supports read/write XML(or gziped XML) file,
+structure(s) modification.
+
+%package doc
+Summary:        Documentation files for libunfo library
+Group:          Development/Libraries
+Requires:       %{name} = %{version}-%{release}
+BuildArch:      noarch
+BuildRequires:  doxygen
+
+%description doc
+Documentation files for libunfo library
+
+%package devel
+Summary:        Development files for libcomps library
+Group:          Development/Libraries
+Requires:       %{name}%{?_isa} = %{version}-%{release}
+
+%description devel
+Development files for libunfo library
+
+%package -n python-libcomps
+Summary:        Python2 bindings for libunfo library
+Group:          Development/Libraries
+BuildRequires:  python-devel
+Requires:       %{name}%{?_isa} = %{version}-%{release}
+
+%description -n python-libcomps
+Python2 bindings for libcomps library
+
+%package -n python3-libcomps
+Summary:        Python3 bindings for libunfo library
+Group:          Development/Libraries
+BuildRequires:  python3-devel
+Requires:       %{name}%{?_isa} = %{version}-%{release}
+
+%description -n python3-libcomps
+Python3 bindings for libcomps library
+
+
+%prep
+%setup -qn %{name}-%{commit}
+
+rm -rf py3
+mkdir ../py3
+cp -a . ../py3/
+mv ../py3 ./
+
+%build
+%cmake -DPYTHON_DESIRED:STRING=2 libunfo/
+make %{?_smp_mflags}
+make %{?_smp_mflags} docs
+
+pushd py3
+%cmake -DPYTHON_DESIRED:STRING=3 libunfo/
+make %{?_smp_mflags}
+make %{?_smp_mflags} docs
+popd
+
+
+%check devel
+    make test
+
+%install
+make install DESTDIR=%{buildroot}
+pushd py3
+make install DESTDIR=%{buildroot}
+popd
+
+%clean
+rm -rf $buildroot
+
+%post -p /sbin/ldconfig
+
+%postun -p /sbin/ldconfig
+
+%files
+%{_libdir}/libunfo.so.*
+%doc README.md COPYING
+
+%files devel
+%{_libdir}/libunfo.so
+%{_includedir}/*
+
+%files doc
+%doc docs/libunfo-doc/html
+
+%files -n python-libunfo
+%{_libdir}/*
+%exclude %{_libdir}/libunfo/__pycache__
+
+%files -n python3-libunfo
+%{_libdir}/*
+%exclude %{_libdir}/libunfo/__pycache__
+
+
+%changelog
+@CHANGELOG@
