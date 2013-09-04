@@ -35,30 +35,30 @@ BuildRequires:  doxygen
 Documentation files for libunfo library
 
 %package devel
-Summary:        Development files for libcomps library
+Summary:        Development files for libunfo library
 Group:          Development/Libraries
 Requires:       %{name}%{?_isa} = %{version}-%{release}
 
 %description devel
 Development files for libunfo library
 
-%package -n python-libcomps
+%package -n python-libunfo
 Summary:        Python2 bindings for libunfo library
 Group:          Development/Libraries
 BuildRequires:  python-devel
 Requires:       %{name}%{?_isa} = %{version}-%{release}
 
-%description -n python-libcomps
-Python2 bindings for libcomps library
+%description -n python-libunfo
+Python2 bindings for libunfo library
 
-%package -n python3-libcomps
+%package -n python3-libunfo
 Summary:        Python3 bindings for libunfo library
 Group:          Development/Libraries
 BuildRequires:  python3-devel
 Requires:       %{name}%{?_isa} = %{version}-%{release}
 
-%description -n python3-libcomps
-Python3 bindings for libcomps library
+%description -n python3-libunfo
+Python3 bindings for libunfo library
 
 
 %prep
@@ -70,12 +70,12 @@ cp -a . ../py3/
 mv ../py3 ./
 
 %build
-%cmake -DPYTHON_DESIRED:STRING=2 libunfo/
+%cmake -DPYTHON_DESIRED:STRING=2
 make %{?_smp_mflags}
 make %{?_smp_mflags} docs
 
 pushd py3
-%cmake -DPYTHON_DESIRED:STRING=3 libunfo/
+%cmake -DPYTHON_DESIRED:STRING=3
 make %{?_smp_mflags}
 make %{?_smp_mflags} docs
 popd

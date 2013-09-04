@@ -1,3 +1,5 @@
+include(chcommits.cmake)
+
 MACRO(LIST_CONTAINS var value)
     SET(${var} FALSE)
     FOREACH (value2 ${ARGN})
@@ -64,10 +66,6 @@ MACRO(MAKE_LOGENTRY log_entry commit)
 ENDMACRO(MAKE_LOGENTRY)
 
 include (${CMAKE_SOURCE_DIR}/version.cmake)
-
-SET(changelog_commits ;
-
-)
 
 set(CHANGELOG "")
 
@@ -146,7 +144,7 @@ set(VERSION ${libunfo_VERSION_MAJOR}.${libunfo_VERSION_MINOR}.${libunfo_VERSION_
 exec_program("git" ARGS rev-parse --short HEAD OUTPUT_VARIABLE GITREV)
 exec_program("git" ARGS rev-parse HEAD OUTPUT_VARIABLE GITREVLONG)
 
-set(GITARG archive ${GITREV} "--format=tar.gz" "--prefix=libcomps-${GITREVLONG}/")
+set(GITARG archive ${GITREV} "--format=tar.gz" "--prefix=libunfo-${GITREVLONG}/")
 set(GITCMD "git")
 execute_process(COMMAND ${GITCMD} ${GITARG} OUTPUT_FILE ${archive_name})
 

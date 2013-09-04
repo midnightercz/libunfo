@@ -1,0 +1,1 @@
+SET(changelog_commits ;)

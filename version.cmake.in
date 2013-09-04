@@ -1,0 +1,4 @@
+set(libunfo_VERSION_MAJOR @libunfo_VERSION_MAJOR@)
+set(libunfo_VERSION_MINOR @libunfo_VERSION_MINOR@)
+set(libunfo_VERSION_PATCH @libunfo_VERSION_PATCH@)
+set(libunfo_RELEASE @libunfo_RELEASE@)
