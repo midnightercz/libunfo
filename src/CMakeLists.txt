@@ -3,11 +3,11 @@ set(libunfo_SRC unfo.c unfo_doc.c unfo_docupdate.c unfo_objlist.c unfo_obj.c
                 unfo_doccoll.c unfo_packed.c unfo_log.c unfo_log_codes.c
                 unfo_parse.c unfo_elems.c
                 unfo_utils.c)
-set(libunfo_HEAD unfo.h unfo_doc.h unfo_docupdate.h unfo_objlist.h unfo_obj.h
-                unfo_mm.h unfo_hslist.h unfo_dict.h unfo_docref.h unfo_docpkg.h
-                unfo_doccoll.h unfo_packed.h unfo_log.h unfo_log_codes.h
-                unfo_parse.h unfo_types.h unfo_elems.h
-                unfo_utils.h)
+set(libunfo_HDRS h/unfo.h h/unfo_doc.h h/unfo_docupdate.h h/unfo_objlist.h h/unfo_obj.h
+                 h/unfo_mm.h h/unfo_hslist.h h/unfo_dict.h h/unfo_docref.h h/unfo_docpkg.h
+                 h/unfo_doccoll.h h/unfo_packed.h h/unfo_log.h h/unfo_log_codes.h
+                 h/unfo_parse.h h/unfo_types.h h/unfo_elems.h
+                 h/unfo_utils.h)
 
 find_library(EXPAT_LIBRARY NAMES expat)
 find_package(EXPAT REQUIRED)
@@ -37,7 +37,7 @@ IF (CMAKE_SIZEOF_VOID_P MATCHES "8")
 ENDIF (CMAKE_SIZEOF_VOID_P MATCHES "8")
 set (LIB_INST_DIR ${CMAKE_INSTALL_PREFIX}/lib${LIB_SUFFIX})
 
-install(FILES ${libunfo_HEADERS} DESTINATION include/libunfo)
+install(FILES ${libunfo_HDRS} DESTINATION include/libunfo)
 install(TARGETS unfo LIBRARY DESTINATION ${LIB_INST_DIR})
 
 add_subdirectory(python)

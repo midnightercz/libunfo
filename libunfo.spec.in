@@ -105,8 +105,8 @@ rm -rf $buildroot
 %{_libdir}/libunfo.so
 %{_includedir}/*
 
-%files doc
-%doc docs/libunfo-doc/html
+#%files doc
+#%doc docs/libunfo-doc/html
 
 %files -n python-libunfo
 %{_libdir}/*
