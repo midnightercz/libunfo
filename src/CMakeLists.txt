@@ -22,6 +22,8 @@ target_link_libraries(unfo m)
 target_link_libraries(unfo ${LIBXML2_LIBRARIES})
 target_link_libraries(unfo ${EXPAT_LIBRARY})
 
+set_target_properties(unfo PROPERTIES SOVERSION ${VERSION})
+
 if (${ZLIB_SUPPORT} STREQUAL YES)
     find_library(ZLIB_LIBRARY NAMES zlib)
     find_package(ZLIB REQUIRED)
