@@ -1,0 +1,2 @@
+#!/bin/sh
+@PYTHON_EXECUTABLE@ test.py

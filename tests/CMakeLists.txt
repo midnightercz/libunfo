@@ -48,3 +48,13 @@ endforeach()
 target_link_libraries(test_parse unfo)
 target_link_libraries(test_parse ${CHECK_LIBRARY})
 set_target_properties(test_parse PROPERTIES COMPILE_FLAGS "${CMAKE_C_FLAGS} -g")
+
+add_custom_target(test_parse_run COMMAND ./test_parse
+                                 WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+                                 DEPENDS test_parse
+                                 COMMENT "Running unfo_parse test")
+
+add_custom_target(test_doc_run COMMAND ./test_doc
+                                 WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+                                 DEPENDS test_doc
+                                 COMMENT "Running unfo_doc test")

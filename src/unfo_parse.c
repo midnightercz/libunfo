@@ -234,7 +234,7 @@ void unfo_parse_start_elem_handler(void *userData, const XML_Char *s,
 
     elem = unfo_parse_elem_create(s, attrs);
     elem->valid = 1;
-    if (elem->type = UNFO_ELEM_UNKNOWN) {
+    if (elem->type == UNFO_ELEM_UNKNOWN) {
         num1 = unfo_num(parser_line);
         num2 = unfo_num(parser_col);
         str1 = unfo_str((const char*)s);

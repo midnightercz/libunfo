@@ -96,6 +96,6 @@ int main(int argc, char *argv[]) {
 
     failed = srunner_ntests_failed(sr);
     srunner_free(sr);
-    return (failed) ? EXIT_SUCCESS: EXIT_FAILURE;
+    return (!failed) ? EXIT_SUCCESS: EXIT_FAILURE;
 }
 

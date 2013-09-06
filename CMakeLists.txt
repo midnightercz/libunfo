@@ -18,5 +18,10 @@ find_package(LibXml2 REQUIRED)
 message("xml2dirs ${LIBXML2_INCLUDE_DIR}")
 include_directories(${LIBXML2_INCLUDE_DIR})
 
+add_custom_target(ctest DEPENDS test_parse_run test_doc_run)
+add_custom_target(pytest DEPENDS test_py_run)
+add_custom_target(test DEPENDS ctest pytest)
+
 add_subdirectory(src)
 add_subdirectory(tests)
+add_subdirectory(docs EXCLUDE_FROM_ALL)

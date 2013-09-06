@@ -12,7 +12,12 @@ include_directories(${PYTHON_INCLUDE_PATH})
 include_directories(${LIBUNFO_INCLUDE_PATH})
 include_directories("${PROJECT_SOURCE_DIR}/src")
 
-set(test_files test.py update-short.xml update-short1.xml.gz ../__init__.py)
+set(test_files test.py update-short.xml update-short1.xml.gz
+               ../__init__.py run_tests.sh)
+
+configure_file("${CMAKE_CURRENT_SOURCE_DIR}/tests/run_tests.sh.in"
+               "${CMAKE_CURRENT_SOURCE_DIR}/tests/run_tests.sh")
+
 foreach (file ${test_files})
     file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/tests/${file}" DESTINATION "./libunfo/")
 endforeach(file ${test_files})
@@ -36,6 +41,11 @@ target_link_libraries(pyunfo unfo)
 target_link_libraries(pyunfo ${EXPAT_LIBRARIES})
 target_link_libraries(pyunfo ${LIBXML2_LIBRARIES})
 target_link_libraries(pyunfo ${PYTHON_LIBRARIES})
+
+add_custom_target(test_py_run COMMAND ./run_tests.sh
+                                 WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/libunfo
+                                 DEPENDS pyunfo
+                                 COMMENT "Running python bindings test")
 
 install(FILES __init__.py DESTINATION ${PYTHON_INSTALL_DIR}/libunfo)
 install(TARGETS pyunfo LIBRARY DESTINATION ${PYTHON_INSTALL_DIR}/libunfo)
